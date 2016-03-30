@@ -13,7 +13,7 @@
 .externalToolBuilders
 .gradle
 .signing/
-.idea/
+/.idea
 *.iml
 local.properties
 =======
