@@ -13,7 +13,7 @@ import woverines.sfsuapp.R;
 /**
  * A placeholder fragment containing a simple view.
  */
-public class Gallery extends Fragment {
+public class HomePageFragment extends Fragment {
     /**
      * The fragment argument representing the section number for this
      * fragment.
@@ -21,7 +21,7 @@ public class Gallery extends Fragment {
     private static final String ARG_SECTION_NUMBER = "section_number";
     private static final String ARG_TEXT = "text";
 
-    public Gallery() {
+    public HomePageFragment() {
     }
 
     /**
@@ -29,9 +29,9 @@ public class Gallery extends Fragment {
      * number.
      *
      */
-    public static Gallery newInstance(int sectionNumber, String text) {
+    public static HomePageFragment newInstance(int sectionNumber, String text) {
 
-        Gallery fragment = new Gallery();
+        HomePageFragment fragment = new HomePageFragment();
         Bundle args = new Bundle();
         args.putInt(ARG_SECTION_NUMBER, sectionNumber);
         args.putString(ARG_TEXT, text);
@@ -42,7 +42,7 @@ public class Gallery extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_gallery, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_home_page, container, false);
         Bundle args = getArguments();
         TextView textView = (TextView) rootView.findViewById(R.id.section_label);
         textView.setText(args.getString(ARG_TEXT));

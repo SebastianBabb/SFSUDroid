@@ -22,6 +22,7 @@ import android.view.MenuItem;
 import woverines.sfsuapp.R;
 import woverines.sfsuapp.fragment.CampusMapFragment;
 import woverines.sfsuapp.fragment.Gallery;
+import woverines.sfsuapp.fragment.HomePageFragment;
 import woverines.sfsuapp.fragment.ResourcesFragment;
 import woverines.sfsuapp.fragment.ShuttleScheduleFragment;
 import woverines.sfsuapp.settings.SettingsActivity;
@@ -54,7 +55,7 @@ public class MainActivity extends AppCompatActivity
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
         //HIDES TABs
-        tabLayout.setVisibility(View.GONE);
+//        tabLayout.setVisibility(View.GONE);
 
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -114,13 +115,13 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.campus_map) {
+        if (id == R.id.home_page) {
             mViewPager.setCurrentItem(0);
-        } else if (id == R.id.shuttle) {
+        } else if (id == R.id.campus_map) {
             mViewPager.setCurrentItem(1);
-        } else if (id == R.id.resources) {
+        } else if (id == R.id.shuttle) {
             mViewPager.setCurrentItem(2);
-        } else if (id == R.id.gallery) {
+        } else if (id == R.id.resources) {
             mViewPager.setCurrentItem(3);
         } else if (id == R.id.schedule_planner) {
             onAddClassAction();
@@ -155,13 +156,15 @@ public class MainActivity extends AppCompatActivity
             // getItem is called to instantiate the fragment for the given page.
             // Return a CampusMapFragment (defined as a static inner class below).\
             if(position == 0)
-                return CampusMapFragment.newInstance(position + 1, "CAMPUS MAP HERE");
+                return HomePageFragment.newInstance(position + 1, "HOME PAGE HERE");
             else if(position == 1)
-                return ShuttleScheduleFragment.newInstance(position + 1, "SHUTTLE SCHEDULE HERE");
+                return CampusMapFragment.newInstance(position + 1, "CAMPUS MAP HERE");
             else if(position == 2)
-                return ResourcesFragment.newInstance(position + 1, "SFSU RESOURCES HERE");
+                return ShuttleScheduleFragment.newInstance(position + 1, "SHUTTLE SCHEDULE HERE");
+            else if(position == 3)
+                return ResourcesFragment.newInstance(position + 1, "RESOURCES HERE - Helpful links");
             else
-                return Gallery.newInstance(position + 1, "GALLERY HERE");
+                return HomePageFragment.newInstance(position + 1, "Home default");
         }
 
         @Override
@@ -174,13 +177,14 @@ public class MainActivity extends AppCompatActivity
         public CharSequence getPageTitle(int position) {
             switch (position) {
                 case 0:
-                    return "SECTION 1";
+                    return "Home";
                 case 1:
-                    return "SECTION 2";
+                    return "Map";
                 case 2:
-                    return "SECTION 3";
+                    return "Shuttle";
                 case 3:
-                    return "SECTION 4";
+                    return "Links";
+
             }
             return null;
         }
