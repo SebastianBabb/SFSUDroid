@@ -1,28 +1,56 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <group android:checkableBehavior="single">
-        <item
-            android:id="@+id/campus_map"
-            android:icon="@android:drawable/ic_dialog_map"
-            android:title="Campus Map" />
-        <item
-            android:id="@+id/shuttle"
-            android:icon="@android:drawable/ic_menu_help"
-            android:title="Shuttle Schedule" />
-        <item
-            android:id="@+id/resources"
-            android:icon="@android:drawable/ic_menu_help"
-            android:title="SFSU Resources" />
+    <!--<group android:checkableBehavior="single">-->
+        <!--<item-->
+            <!--android:id="@+id/campus_map"-->
+            <!--android:icon="@android:drawable/ic_dialog_map"-->
+            <!--android:title="Campus Map" />-->
+        <!--<item-->
+            <!--android:id="@+id/shuttle"-->
+            <!--android:icon="@android:drawable/ic_menu_help"-->
+            <!--android:title="Shuttle Schedule" />-->
 
-    </group>
+
+    <!--</group>-->
+    <item
+        android:id="@+id/schedule_planner"
+        android:icon="@android:drawable/btn_star_big_on"
+        android:title="My Schedule" />
+
+    <item
+        android:id="@+id/gallery"
+        android:icon="@android:drawable/ic_menu_gallery"
+        android:title="Campus Map" />
+
+    <item android:title="Transportation">
+        <menu>
+            <item
+                android:id="@+id/campus_map"
+                android:icon="@android:drawable/ic_dialog_map"
+                android:title="Campus Map" />
+            <item
+                android:id="@+id/shuttle"
+                android:icon="@android:drawable/ic_menu_help"
+                android:title="Shuttle Schedule" />
+
+        </menu>
+    </item>
+
+
+
 
     <item android:title="Options">
         <menu>
             <item
+                android:id="@+id/resources"
+                android:icon="@android:drawable/ic_menu_help"
+                android:title="SFSU Resources" />
+            <item
                 android:id="@+id/settings"
                 android:icon="@drawable/ic_menu_manage"
                 android:title="Settings" />
+
         </menu>
     </item>
 

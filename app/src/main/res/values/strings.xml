@@ -64,4 +64,7 @@
     <string name="pref_ringtone_silent">Silent</string>
 
     <string name="pref_title_vibrate">Vibrate</string>
+    <string name="title_activity_schedule_planner">SchedulePlanner</string>
+    <string name="title_activity_staff_directory">StaffDirectory</string>
+    <string name="title_activity_class_catalog">ClassCatalog</string>
 </resources>

@@ -21,6 +21,7 @@ import android.view.MenuItem;
 
 import woverines.sfsuapp.R;
 import woverines.sfsuapp.fragment.CampusMapFragment;
+import woverines.sfsuapp.fragment.Gallery;
 import woverines.sfsuapp.fragment.ResourcesFragment;
 import woverines.sfsuapp.fragment.ShuttleScheduleFragment;
 import woverines.sfsuapp.settings.SettingsActivity;
@@ -119,6 +120,10 @@ public class MainActivity extends AppCompatActivity
             mViewPager.setCurrentItem(1);
         } else if (id == R.id.resources) {
             mViewPager.setCurrentItem(2);
+        } else if (id == R.id.gallery) {
+            mViewPager.setCurrentItem(3);
+        } else if (id == R.id.schedule_planner) {
+            onAddClassAction();
         } else if (id == R.id.settings) {
             onOptionsItemSelected();
         }
@@ -127,6 +132,8 @@ public class MainActivity extends AppCompatActivity
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+
+
 
 
     //TODO extract
@@ -148,14 +155,16 @@ public class MainActivity extends AppCompatActivity
                 return CampusMapFragment.newInstance(position + 1, "CAMPUS MAP HERE");
             else if(position == 1)
                 return ShuttleScheduleFragment.newInstance(position + 1, "SHUTTLE SCHEDULE HERE");
-            else
+            else if(position == 2)
                 return ResourcesFragment.newInstance(position + 1, "SFSU RESOURCES HERE");
+            else
+                return Gallery.newInstance(position + 1, "GALLERY HERE");
         }
 
         @Override
         public int getCount() {
-            // Show 3 total pages.
-            return 3;
+            //TODO
+            return 4;
         }
 
         @Override
@@ -167,15 +176,23 @@ public class MainActivity extends AppCompatActivity
                     return "SECTION 2";
                 case 2:
                     return "SECTION 3";
+                case 3:
+                    return "SECTION 4";
             }
             return null;
         }
     }
 
     public void onOptionsItemSelected() {
-        Intent goToIngInput = new Intent(this, SettingsActivity.class);
+        Intent goToSettings = new Intent(this, SettingsActivity.class);
 
-        startActivity(goToIngInput);
+        startActivity(goToSettings);
 
+    }
+
+    private void onAddClassAction() {
+        Intent goToSchedule = new Intent(this, SchedulePlanner.class);
+
+        startActivity(goToSchedule);
     }
 }

@@ -21,6 +21,33 @@
         <activity
             android:name=".settings.SettingsActivity"
             android:label="@string/title_activity_settings" />
+        <activity
+            android:name=".activity.SchedulePlanner"
+            android:label="@string/title_activity_schedule_planner"
+            android:parentActivityName=".activity.MainActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="woverines.sfsuapp.activity.MainActivity" />
+        </activity>
+        <activity
+            android:name=".activity.StaffDirectory"
+            android:label="@string/title_activity_staff_directory"
+            android:parentActivityName=".activity.MainActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="woverines.sfsuapp.activity.MainActivity" />
+        </activity>
+        <activity
+            android:name=".activity.ClassCatalog"
+            android:label="@string/title_activity_class_catalog"
+            android:parentActivityName=".activity.SchedulePlanner"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="woverines.sfsuapp.activity.SchedulePlanner" />
+        </activity>
     </application>
 
 </manifest>
