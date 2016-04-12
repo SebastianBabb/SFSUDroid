@@ -124,9 +124,12 @@ public class MainActivity extends AppCompatActivity
             mViewPager.setCurrentItem(3);
         } else if (id == R.id.schedule_planner) {
             onAddClassAction();
+        } else if (id == R.id.staff_directory) {
+            onGoToStaffDirectoryAction();
         } else if (id == R.id.settings) {
             onOptionsItemSelected();
         }
+
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
@@ -194,5 +197,11 @@ public class MainActivity extends AppCompatActivity
         Intent goToSchedule = new Intent(this, SchedulePlanner.class);
 
         startActivity(goToSchedule);
+    }
+
+    private void onGoToStaffDirectoryAction() {
+        Intent goToStaffDirectory = new Intent(this, StaffDirectory.class);
+
+        startActivity(goToStaffDirectory);
     }
 }

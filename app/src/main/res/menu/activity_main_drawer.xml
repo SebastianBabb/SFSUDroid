@@ -19,12 +19,16 @@
         android:title="My Schedule" />
 
     <item
-        android:id="@+id/gallery"
-        android:icon="@android:drawable/ic_menu_gallery"
-        android:title="Campus Map" />
+        android:id="@+id/staff_directory"
+        android:icon="@android:drawable/ic_dialog_info"
+        android:title="Staff Directory" />
 
-    <item android:title="Transportation">
+    <item android:title="Resources">
         <menu>
+            <item
+                android:id="@+id/gallery"
+                android:icon="@android:drawable/ic_menu_gallery"
+                android:title="Gallery" />
             <item
                 android:id="@+id/campus_map"
                 android:icon="@android:drawable/ic_dialog_map"
@@ -33,19 +37,18 @@
                 android:id="@+id/shuttle"
                 android:icon="@android:drawable/ic_menu_help"
                 android:title="Shuttle Schedule" />
+            <item
+                android:id="@+id/resources"
+                android:icon="@android:drawable/ic_menu_help"
+                android:title="Helpful links" />
 
         </menu>
     </item>
 
 
-
-
     <item android:title="Options">
         <menu>
-            <item
-                android:id="@+id/resources"
-                android:icon="@android:drawable/ic_menu_help"
-                android:title="SFSU Resources" />
+
             <item
                 android:id="@+id/settings"
                 android:icon="@drawable/ic_menu_manage"
