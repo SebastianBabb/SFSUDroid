@@ -3,24 +3,24 @@
 
     <group android:checkableBehavior="single">
         <item
-            android:id="@+id/nav_camera"
-            android:icon="@drawable/ic_menu_camera"
-            android:title="Import" />
+            android:id="@+id/campus_map"
+            android:icon="@android:drawable/ic_dialog_map"
+            android:title="Campus Map" />
         <item
-            android:id="@+id/nav_gallery"
-            android:icon="@drawable/ic_menu_gallery"
-            android:title="Gallery" />
+            android:id="@+id/shuttle"
+            android:icon="@android:drawable/ic_menu_help"
+            android:title="Shuttle Schedule" />
         <item
-            android:id="@+id/nav_slideshow"
-            android:icon="@drawable/ic_menu_slideshow"
-            android:title="Slideshow" />
+            android:id="@+id/resources"
+            android:icon="@android:drawable/ic_menu_help"
+            android:title="SFSU Resources" />
 
     </group>
 
     <item android:title="Options">
         <menu>
             <item
-                android:id="@+id/nav_manage"
+                android:id="@+id/settings"
                 android:icon="@drawable/ic_menu_manage"
                 android:title="Settings" />
         </menu>

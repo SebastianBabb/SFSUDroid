@@ -1,4 +1,4 @@
-package woverines.sfsuapp;
+package woverines.sfsuapp.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -19,7 +19,11 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import settings.SettingsActivity;
+import woverines.sfsuapp.R;
+import woverines.sfsuapp.fragment.CampusMapFragment;
+import woverines.sfsuapp.fragment.ResourcesFragment;
+import woverines.sfsuapp.fragment.ShuttleScheduleFragment;
+import woverines.sfsuapp.settings.SettingsActivity;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -109,13 +113,13 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_camera) {
-            // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
+        if (id == R.id.campus_map) {
+            mViewPager.setCurrentItem(0);
+        } else if (id == R.id.shuttle) {
             mViewPager.setCurrentItem(1);
-        } else if (id == R.id.nav_slideshow) {
+        } else if (id == R.id.resources) {
             mViewPager.setCurrentItem(2);
-        } else if (id == R.id.nav_manage) {
+        } else if (id == R.id.settings) {
             onOptionsItemSelected();
         }
 
@@ -139,13 +143,13 @@ public class MainActivity extends AppCompatActivity
         @Override
         public Fragment getItem(int position) {
             // getItem is called to instantiate the fragment for the given page.
-            // Return a PlaceholderFragment (defined as a static inner class below).\
+            // Return a CampusMapFragment (defined as a static inner class below).\
             if(position == 0)
-                return PlaceholderFragment.newInstance(position + 1, "first");
+                return CampusMapFragment.newInstance(position + 1, "CAMPUS MAP HERE");
             else if(position == 1)
-                return PlaceholderFragment.newInstance(position + 1, "second");
+                return ShuttleScheduleFragment.newInstance(position + 1, "SHUTTLE SCHEDULE HERE");
             else
-                return PlaceholderFragment2.newInstance(position + 1, "third");
+                return ResourcesFragment.newInstance(position + 1, "SFSU RESOURCES HERE");
         }
 
         @Override
