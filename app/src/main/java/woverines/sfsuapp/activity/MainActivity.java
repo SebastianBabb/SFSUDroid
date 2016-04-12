@@ -9,6 +9,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -20,6 +21,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import woverines.sfsuapp.R;
+import woverines.sfsuapp.api.HttpRequestorManager;
 import woverines.sfsuapp.fragment.CampusMapFragment;
 import woverines.sfsuapp.fragment.Gallery;
 import woverines.sfsuapp.fragment.HomePageFragment;
