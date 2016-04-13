@@ -5,4 +5,6 @@ package woverines.sfsuapp.api;
  */
 abstract public class Callback {
     public abstract void response(Object object);
+    public abstract void error(Object object);
 }
+
