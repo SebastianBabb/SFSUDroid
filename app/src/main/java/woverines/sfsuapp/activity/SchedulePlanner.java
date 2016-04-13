@@ -190,26 +190,26 @@ public class SchedulePlanner extends AppCompatActivity {
      *         to fill up a scrollListView.
      *         <p/>
      *         This class uses a custom view holder class that stores only the nessesary values of
-     *         a recipe that are required for a recipe list view item.
+     *         a course that are required for a Course list view item.
      *         <p/>
      *         Layout Recycling system:
-     *         - create a single instance of a ListView item layout RecipeListItem.xml.
+     *         - create a single instance of a ListView item layout schedule_list_item.xml.
      *         if(ListView is empty){
-     *         create a new instance of all views inside RecipeListItem.xml
-     *         create an instance of a RecipeViewHolder class
-     *         -set values of RecipeViewHolder with the first recipe is RecipeList
-     *         -attach each element of RecipeViewHolder to its corresponding element in RecipeListItem.xml
-     *         -send the current instance of RecipeViewHolder to the ListView Adapter
+     *         create a new instance of all views inside schedule_list_item.xml
+     *         create an instance of a ScheduleViewHolder class
+     *         -set values of ScheduleViewHolder with the first course is courseList
+     *         -attach each element of ScheduleViewHolder to its corresponding element in schedule_list_item.xml
+     *         -send the current instance of ScheduleViewHolder to the ListView Adapter
      *         }
      *         else{
-     *         -set values of RecipeViewHolder with the (position)th recipe is RecipeList
-     *         -attach each element of RecipeViewHolder to its corresponding element in RecipeListItem.xml
-     *         -send the current instance of RecipeViewHolder to the ListView Adapter
+     *         -set values of ScheduleViewHolder with the (position)th course is couseList
+     *         -attach each element of ScheduleViewHolder to its corresponding element in schedule_list_item.xml
+     *         -send the current instance of ScheduleViewHolder to the ListView Adapter
      *         <p/>
-     *         return the current instance of RecipeViewHolder
+     *         return the current instance of ScheduleViewHolder
      *         }
      *         <p/>
-     *         RESULT: Only one instance of RecipeListItem.xml and each of its view is created
+     *         RESULT: Only one instance of schedule_list_item.xml and each of its view is created
      *         -this since instance of it gets recycles for each aditional item in the ListView
      */
     private class ScheduleListAdapter extends ArrayAdapter<Course> {
@@ -223,12 +223,9 @@ public class SchedulePlanner extends AppCompatActivity {
         //setting up items in list
         @Override
         public View getView(final int position, View convertView, ViewGroup parent) {
-            //instead of creating a new recipe_list_item view, check if it exists,
+            //instead of creating a new schedule_list_item view, check if it exists,
             //if exits: reuse the view with new data - using .from(getContext()), context returned by super call
             //if does not exist: use inflater to create it (inflater is very taxing)
-//            int numRecipeIngr = 0, matched = 0;  //used to compute number of ingr matched
-//            String matchPercent = "NA";
-//            double p_match = 0;  //Percent of ingr matched
             ScheduleViewHolder mainViewHolder = null;
             if (convertView == null) {
                 LayoutInflater inflater = LayoutInflater.from(getContext());
@@ -249,46 +246,14 @@ public class SchedulePlanner extends AppCompatActivity {
                 viewHolder.instructor.setText(getItem(position).getInstructor().toString());
                 viewHolder.meetTime.setText(getItem(position).getMeetTime().toString());
 
-                //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-//
-                //Picasso
-//                System.out.println("item: "+ getItem(position));
-//                System.out.println("url: " + getItem(position).getImageUrl());
-//                if (!getItem(position).getImageUrl().isEmpty()) {
-//                    Picasso.with(getContext())
-//                            .load(getItem(position).getImageUrl().toString())
-//                            .placeholder(R.drawable.napkin_orange)   // optional
-//                            .error(R.drawable.napkin_orange)         // optional
-//                            .into(viewHolder.image);
-//                }
-                //                //compute matched ingridents
-//                for (String  r_ingr : getItem(position).getIngredients()) {
-//                    for(String s_ingr : getSearchParameters()){
-//                        if(r_ingr.contains(s_ingr)){
-//                            matched++;
-//                        }
-//                    }
-//                }
-
-                //displayed number of matched ingr
-//                getItem(position).setIngrMatched(matched);
-//                p_match = 100 * ((double) matched / (double) getItem(position).getIngredients().size());
-//                //set % match
-//                getItem(position).setPercentMatch(p_match);
-//                matchPercent = String.format("%.2f", p_match);
-//                viewHolder.matched.setText("Matched:\n" + matchPercent + "%");
-//
-//                viewHolder.time = (TextView) convertView.findViewById(R.id.recipe_list_item_time);
-//                //set time
-//                viewHolder.time.setText(Integer.toString(getItem(position).getCookTime()));
-//
 
                     /*
                     add a reference of this object into convertView, so we convertView != null
-                        we can retrieve the object and directly set the new data to the RecipeViewHolder items
+                        we can retrieve the object and directly set the new data to the ScheduleViewHolder items
                          (recyle this object)
                      */
                 convertView.setTag(viewHolder);
-            } else {  //converView != null --> retrieve viewHolder (using tag), assign it to externally declared RecipeViewHolder (mainViewHolder)
+            } else {  //converView != null --> retrieve viewHolder (using tag), assign it to externally declared ScheduleViewHolder (mainViewHolder)
                 Course thisCourse = getItem(position);
                 mainViewHolder = (ScheduleViewHolder) convertView.getTag();
                 //manually set the data of list view items here//
@@ -297,36 +262,6 @@ public class SchedulePlanner extends AppCompatActivity {
                 mainViewHolder.instructor.setText(thisCourse.getInstructor());
                 mainViewHolder.meetTime.setText(thisCourse.getMeetTime());
 
-//                //convert int to string
-//                mainViewHolder.time.setText(Integer.toString(thisRecipe.getCookTime()));
-
-//                //compute matched ingridents
-//                for (String  r_ingr : getItem(position).getIngredients()) {
-//                    for(String s_ingr : getSearchParameters()){
-//                        if(r_ingr.contains(s_ingr)){
-//                            matched++;
-//                        }
-//                    }
-//                }
-
-//                //record ingr matched in currect version of recipe class.
-//                getItem(position).setIngrMatched(matched);
-
-//                //record % matched
-//                p_match = 100 * ((double) matched / (double) thisRecipe.getIngredients().size());
-//                thisRecipe.setPercentMatch(p_match);
-//
-//                matchPercent = String.format("%.2f", p_match);
-//                mainViewHolder.matched.setText("Matched:\n" + matchPercent + "%");
-//                if (!thisRecipe.getImageUrl().isEmpty()) {
-//                    Picasso.with(getContext())
-//                            .load(thisRecipe.getImageUrl())
-//                            .placeholder(R.drawable.napkin_orange)   // optional
-//                            .error(R.drawable.napkin_orange)         // optional
-//                            .into(mainViewHolder.image);
-//                } else {
-//                    mainViewHolder.image.setImageResource(R.drawable.napkin_orange);
-//                }
             }
 
             return convertView;
