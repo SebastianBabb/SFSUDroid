@@ -42,4 +42,11 @@
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
         android:layout_marginEnd="20dp" />
+
+    <Space
+        android:layout_width="20px"
+        android:layout_height="20px"
+        android:layout_below="@+id/course_instructor"
+        android:layout_alignParentStart="true"
+        android:layout_alignEnd="@+id/course_image" />
 </RelativeLayout>

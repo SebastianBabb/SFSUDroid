@@ -18,6 +18,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 import woverines.sfsuapp.R;
 import woverines.sfsuapp.database.Course;
@@ -35,10 +36,9 @@ public class SchedulePlanner extends AppCompatActivity {
     TextView detailInstructorTV;
     Button detailCancelB;
     Button detailAddEventB;
-    /**
-     * ATTENTION: This was auto-generated to implement the App Indexing API.
-     * See https://g.co/AppIndexing/AndroidStudio for more information.
-     */
+
+    //for testing
+    Button genRadomClassesB;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,16 +51,17 @@ public class SchedulePlanner extends AppCompatActivity {
         courseArrayList = new ArrayList<>();
 
 
-        //generate random data for testing
-        Course tempCourse = new Course(1, "668", "Advanced OOP", "Levine", "11:00 - 12:15", "somethign something...");
-        courseArrayList.add(tempCourse);
 
-        for(int i = 0; i < 5; i++)
-        {
-            tempCourse = new Course();
-            tempCourse.genRandomCourse2();
-            courseArrayList.add(tempCourse);
-        }
+
+        genRadomClassesB = (Button) findViewById(R.id.gen_random_classes);
+        genRadomClassesB.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                generateClasses();
+            }
+        });
+
+
 
         courseListView = (ListView) findViewById(R.id.course_list_view);
 
@@ -101,8 +102,30 @@ public class SchedulePlanner extends AppCompatActivity {
 //        });
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+//        generateClasses();
         displaySchedule();
      }
+
+    public void generateClasses()
+    {
+//        if(scheduleAdapter.getCount() != 0)
+            scheduleAdapter.clear();
+
+        //generate random data for testing
+        Course tempCourse = new Course(1, "668", "Advanced OOP", "Levine", "11:00 - 12:15", "somethign something...");
+        courseArrayList.add(tempCourse);
+
+        Random rnd = new Random();
+
+        for(int i = 0; i < rnd.nextInt(15); i++)
+        {
+            tempCourse = new Course();
+            tempCourse.genRandomCourse2();
+            courseArrayList.add(tempCourse);
+        }
+
+        scheduleAdapter.notifyDataSetChanged();
+    }
 
 
     public void displaySchedule() {
