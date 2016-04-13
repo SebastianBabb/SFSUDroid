@@ -13,20 +13,23 @@ import org.json.JSONObject;
 
 public class HttpRequestorManager {
 
-    private static HttpRequestorManager ourInstance = new HttpRequestorManager();
+    private static HttpRequestorManager ourInstance;
     private Context mContext;
     private static String mUrl_Request;
 
-    public static HttpRequestorManager getInstance() {
-
+    public static HttpRequestorManager getInstance(Context ctx) {
+        if(ourInstance == null){
+            return new HttpRequestorManager(ctx);
+        }
         return ourInstance;
     }
 
-    private HttpRequestorManager() {
+    private HttpRequestorManager(Context ctx) {
         //Singleton constructor.
+        this.mContext = ctx.getApplicationContext();
     }
 
-    public void makeRESTRequest(Context ctx){
+    public void makeRESTRequest(final Callback callback){
         String url = "http://ironsquishy.com:5656/api/example";
 
         JsonObjectRequest jsObjRequest = new JsonObjectRequest
@@ -34,7 +37,8 @@ public class HttpRequestorManager {
 
                     @Override
                     public void onResponse(JSONObject response) {
-                        Log.i("VOLLEY", response.toString());
+                        //Log.i("VOLLEY", response.toString());
+                       callback.response(response);
                     }
                 }, new Response.ErrorListener() {
 
@@ -45,6 +49,6 @@ public class HttpRequestorManager {
                 });
 
 
-        HttpQueue.getInstance(ctx).addToRequestQueue(jsObjRequest);
+        HttpQueue.getInstance(this.mContext).addToRequestQueue(jsObjRequest);
     }
 }
