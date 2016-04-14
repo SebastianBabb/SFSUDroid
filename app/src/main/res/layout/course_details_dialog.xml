@@ -29,27 +29,59 @@
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="Meet time:"
         android:id="@+id/dialog_meet_time"
-        android:layout_below="@+id/dialog_course_instructor"
-        android:layout_alignStart="@+id/dialog_course_instructor"
-        android:layout_marginTop="28dp" />
+        android:layout_above="@+id/space"
+        android:layout_alignStart="@+id/dialog_add_event" />
+
+    <ScrollView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/scrollView2"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_above="@+id/dialog_cancel_button"
+        android:layout_below="@+id/space"
+        android:fillViewport="false">
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Description"
+            android:id="@+id/dialog_course_description"
+            android:layout_marginTop="31dp"
+            android:layout_below="@+id/dialog_meet_time"
+            android:layout_alignParentStart="true" />
+
+
+
+    </ScrollView>
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Cancel"
+        android:textColor="@color/colorPrimary2"
+        android:background="@android:color/background_light"
         android:id="@+id/dialog_cancel_button"
+        android:layout_marginBottom="23dp"
         android:layout_alignParentBottom="true"
-        android:layout_alignStart="@+id/dialog_meet_time"
-        android:layout_marginBottom="56dp" />
+        android:layout_toStartOf="@+id/dialog_course_number" />
+
+
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Add event"
+        android:width="@android:dimen/notification_large_icon_width"
         android:id="@+id/dialog_add_event"
-        android:layout_marginEnd="69dp"
-        android:layout_alignTop="@+id/dialog_cancel_button"
-        android:layout_alignParentEnd="true" />
+        android:textColor="@color/colorPrimary"
+        android:background="@color/colorPrimary2"
+
+        android:layout_below="@+id/scrollView2"
+        android:layout_toEndOf="@+id/dialog_cancel_button"
+        android:layout_marginStart="40dp" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -59,5 +91,15 @@
         android:id="@+id/dialog_course_number"
         android:layout_below="@+id/dialog_course_name"
         android:layout_centerHorizontal="true" />
+
+    <Space
+        android:layout_width="20px"
+        android:layout_height="20px"
+        android:background="@android:drawable/divider_horizontal_dim_dark"
+        android:id="@+id/space"
+        android:layout_alignParentEnd="true"
+        android:layout_below="@+id/dialog_course_instructor"
+        android:layout_alignParentStart="true" />
+
 
 </RelativeLayout>
