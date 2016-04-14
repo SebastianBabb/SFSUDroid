@@ -24,12 +24,17 @@ public class HttpRequestorManager {
         return ourInstance;
     }
 
+    public static HttpRequestorManager getInstance() {
+        return ourInstance;
+    }
+
+
     private HttpRequestorManager(Context ctx) {
         //Singleton constructor.
         this.mContext = ctx.getApplicationContext();
     }
 
-    public void makeRESTRequest(final Callback callback){
+    public void makeRESTRequest(String URL, final Callback callback){
         String url = "http://ironsquishy.com:5656/api/example";
 
         JsonObjectRequest jsObjRequest = new JsonObjectRequest
@@ -37,14 +42,13 @@ public class HttpRequestorManager {
 
                     @Override
                     public void onResponse(JSONObject response) {
-                        //Log.i("VOLLEY", response.toString());
                        callback.response(response);
                     }
                 }, new Response.ErrorListener() {
 
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Log.i("VOLLEY", error.toString());
+                        callback.error(error);
                     }
                 });
 
