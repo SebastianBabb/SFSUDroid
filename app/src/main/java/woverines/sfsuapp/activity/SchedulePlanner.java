@@ -3,7 +3,6 @@ package woverines.sfsuapp.activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
@@ -22,6 +21,7 @@ import java.util.Random;
 
 import woverines.sfsuapp.R;
 import woverines.sfsuapp.database.Course;
+import woverines.sfsuapp.database.Event;
 
 public class SchedulePlanner extends AppCompatActivity {
 
@@ -36,6 +36,9 @@ public class SchedulePlanner extends AppCompatActivity {
     TextView detailInstructorTV;
     Button detailCancelB;
     Button detailAddEventB;
+
+//    private
+    public ArrayList<Event> eventArray;
 
     //for testing
     Button genRadomClassesB;
@@ -132,7 +135,7 @@ public class SchedulePlanner extends AppCompatActivity {
 
         //Populate the list
         if (scheduleAdapter == null) {  //if first time opening activity
-            scheduleAdapter = new ScheduleListAdapter(this, R.layout.schedule_list_item, courseArrayList);
+            scheduleAdapter = new ScheduleListAdapter(this, R.layout.course_list_item, courseArrayList);
             courseListView.setAdapter(scheduleAdapter);
         } else {
             runOnUiThread(
@@ -193,23 +196,22 @@ public class SchedulePlanner extends AppCompatActivity {
      *         a course that are required for a Course list view item.
      *         <p/>
      *         Layout Recycling system:
-     *         - create a single instance of a ListView item layout schedule_list_item.xml.
+     *         - create a single instance of a ListView item layout course_list_itemml.
      *         if(ListView is empty){
-     *         create a new instance of all views inside schedule_list_item.xml
+     *         create a new instance of all views inside course_list_itemml
      *         create an instance of a ScheduleViewHolder class
      *         -set values of ScheduleViewHolder with the first course is courseList
-     *         -attach each element of ScheduleViewHolder to its corresponding element in schedule_list_item.xml
-     *         -send the current instance of ScheduleViewHolder to the ListView Adapter
+     *         -attach each element of ScheduleViewHolder to its corresponding element in course_list_item.xml    *         -send the current instance of ScheduleViewHolder to the ListView Adapter
      *         }
      *         else{
      *         -set values of ScheduleViewHolder with the (position)th course is couseList
-     *         -attach each element of ScheduleViewHolder to its corresponding element in schedule_list_item.xml
+     *         -attach each element of ScheduleViewHolder to its corresponding element in course_list_itemml
      *         -send the current instance of ScheduleViewHolder to the ListView Adapter
      *         <p/>
      *         return the current instance of ScheduleViewHolder
      *         }
      *         <p/>
-     *         RESULT: Only one instance of schedule_list_item.xml and each of its view is created
+     *         RESULT: Only one instance of course_list_item.xmlnd each of its view is created
      *         -this since instance of it gets recycles for each aditional item in the ListView
      */
     private class ScheduleListAdapter extends ArrayAdapter<Course> {
@@ -223,7 +225,7 @@ public class SchedulePlanner extends AppCompatActivity {
         //setting up items in list
         @Override
         public View getView(final int position, View convertView, ViewGroup parent) {
-            //instead of creating a new schedule_list_item view, check if it exists,
+            //instead of creating a new course_list_item view, check if it exists,
             //if exits: reuse the view with new data - using .from(getContext()), context returned by super call
             //if does not exist: use inflater to create it (inflater is very taxing)
             ScheduleViewHolder mainViewHolder = null;
