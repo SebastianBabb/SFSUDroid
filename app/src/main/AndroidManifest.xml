@@ -55,6 +55,11 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="woverines.sfsuapp.activity.SchedulePlanner" />
         </activity>
+
+        <activity
+            android:name=".activity.AlertsActivity"
+            android:theme="@style/AppTheme"
+            android:windowSoftInputMode="adjustPan"/>
     </application>
 
 </manifest>
