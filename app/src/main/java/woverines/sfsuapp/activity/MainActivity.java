@@ -33,6 +33,8 @@ import woverines.sfsuapp.settings.SettingsActivity;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
+    private static final int REQUEST_CODE_ALERTS = 1;
+
     private SectionsPagerAdapter mSectionsPagerAdapter;
 
     /**
@@ -211,5 +213,10 @@ public class MainActivity extends AppCompatActivity
         Intent goToStaffDirectory = new Intent(this, StaffDirectory.class);
 
         startActivity(goToStaffDirectory);
+    }
+
+    public void showAlertsActivity() {
+        Intent intent = new Intent(this, AlertsActivity.class);
+        startActivityForResult(intent, REQUEST_CODE_ALERTS);
     }
 }

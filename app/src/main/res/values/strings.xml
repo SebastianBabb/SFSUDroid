@@ -67,4 +67,20 @@
     <string name="title_activity_schedule_planner">SchedulePlanner</string>
     <string name="title_activity_staff_directory">StaffDirectory</string>
     <string name="title_activity_class_catalog">ClassCatalog</string>
+
+    <string name="alert_text">Alert Text</string>
+    <string name="time">Time</string>
+    <string name="reminder">Reminder</string>
+    <string name="alert_sound">Alert Sound</string>
+    <string name="options">Options</string>
+    <string name="vibrate">Vibrate</string>
+    <string name="repeat">Repeat</string>
+    <string-array name="reminder_array">
+        <item>5 Minutes</item>
+        <item>10 Minutes</item>
+        <item>15 Minutes</item>
+        <item>30 Minutes</item>
+        <item>45 Minutes</item>
+        <item>1 Hour</item>
+    </string-array>
 </resources>
