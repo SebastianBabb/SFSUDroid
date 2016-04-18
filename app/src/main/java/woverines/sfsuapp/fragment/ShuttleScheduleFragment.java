@@ -47,14 +47,6 @@ public class ShuttleScheduleFragment extends Fragment {
         final TextView textView = (TextView) rootView.findViewById(R.id.section_label);
         textView.setText(args.getString(ARG_TEXT));
 
-//        Button button = (Button) rootView.findViewById(R.id.button1);
-//        button.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                textView.setText("Random: " + Math.random());
-//            }
-//        });
-
         return rootView;
     }
 }

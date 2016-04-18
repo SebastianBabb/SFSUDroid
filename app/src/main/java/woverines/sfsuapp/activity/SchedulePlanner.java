@@ -35,6 +35,7 @@ public class SchedulePlanner extends AppCompatActivity {
     TextView detailTimeTV;
     TextView detailNumberTV;
     TextView detailInstructorTV;
+    TextView detailDescriptionTV;
     Button detailCancelB;
     Button detailAddEventB;
 
@@ -62,10 +63,7 @@ public class SchedulePlanner extends AppCompatActivity {
             }
         });
 
-
-
         courseListView = (ListView) findViewById(R.id.course_list_view);
-
 
         //SET UP REVIEW DIALOG
         courseDetailDialog = new Dialog(SchedulePlanner.this);
@@ -77,6 +75,7 @@ public class SchedulePlanner extends AppCompatActivity {
         detailNameTV = (TextView) courseDetailDialog.findViewById(R.id.dialog_course_name);
         detailInstructorTV = (TextView) courseDetailDialog.findViewById(R.id.dialog_meet_time);
         detailTimeTV = (TextView) courseDetailDialog.findViewById(R.id.dialog_meet_time);
+        detailDescriptionTV = (TextView) courseDetailDialog.findViewById(R.id.dialog_course_description);
         detailCancelB = (Button) courseDetailDialog.findViewById(R.id.dialog_cancel_button);
         detailAddEventB = (Button) courseDetailDialog.findViewById(R.id.dialog_add_event);
 
@@ -91,7 +90,6 @@ public class SchedulePlanner extends AppCompatActivity {
 
 //        add_class_ib = (Button) findViewById(R.id.)
 
-//        generateClasses();
         setDemoCourseList();
         displaySchedule();
      }
@@ -102,11 +100,6 @@ public class SchedulePlanner extends AppCompatActivity {
         courseArrayList.add(new Course(2361, "CSC", "256", "03", "Machine Structure", "Th", "4:10PM - 6:55PM", "Science Building 101", "Tsun-Yuk Hsu", "Prerequisite: CSC 230 or CSC 330 with grade of C or better. Digital logic circuits; data representation; assembly language programming; subroutine linkage; machine language encoding; interrupt/exception handling; memory system concepts; CPU organization and performance."));
         courseArrayList.add(new Course(2372, "CSC", "413", "02", "Software Development", "M, W, F", "12:10PM - 1:00PM", "Thornton Hall 329", "Marc Sosnick", "Prerequisites: CSC 340 and CSC 412 with grades of C or better. \n" +
                 "Modern software applications. Object-oriented techniques: encapsulation, inheritance, and poly-morphism as mechanism for data design and problem solution. Software design, debugging, testing, and UI design. Software maintenance. Software development tools. Extra fee required. (Plus-minus letter grade only)"));
-        courseArrayList.add(new Course(2378, "CSC", "667", "01", "Internet Application Design and Development", "M", "7:00PM - 9:45PM", "Thornton Hall 210", "John Roberts", "Prerequisite: CSC 413 with grade of C or better or consent of instructor.\n" +
-                "Fundamental technologies on which WWW is based. Extra fee required.\n" +
-                "(CSC 667/CSC 867 is a paired course offering. Students who complete the course at one level may not repeat the course at the other level.)"));
-        courseArrayList.add(new Course(4789, "SW", "352", "01", "Gender, Sexism, and Social Welfare", "Th", "9:35AM - 12:20PM", "Burk Hall 251", "Jocelyn Hermoso", "Prerequisite: Restricted to upper division social work majors.\n" +
-                "Sex role stereotyping in the policies, practices, and organization of social welfare institutions; practice of social workers."));
         }
 
     private void generateDemoEvents()
@@ -161,10 +154,11 @@ public class SchedulePlanner extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
                 //setting up courseDetailsDialog
-                detailNumberTV.setText(courseArrayList.get(position).getNumber());
+                detailNumberTV.setText(courseArrayList.get(position).getDepartment() + " " + courseArrayList.get(position).getNumber() + "." + courseArrayList.get(position).getSection());
                 detailNameTV.setText(courseArrayList.get(position).getName());
                 detailInstructorTV.setText(courseArrayList.get(position).getInstructor());
                 detailTimeTV.setText(courseArrayList.get(position).getMeetTime());
+                detailDescriptionTV.setText(courseArrayList.get(position).getDescription());
 
                 //add go to addEven activity
                 detailAddEventB.setOnClickListener(new View.OnClickListener() {
@@ -192,13 +186,11 @@ public class SchedulePlanner extends AppCompatActivity {
     {
         Intent goToAlertsIntent = new Intent(this, AlertsActivity.class);
         startActivity(goToAlertsIntent);
-
     }
 
-
-    public void goToCatalog() {
+    public void goToCatalog()
+    {
         Intent goToCatalog = new Intent(this, ClassCatalog.class);
-
         startActivity(goToCatalog);
     }
 
@@ -273,7 +265,7 @@ public class SchedulePlanner extends AppCompatActivity {
                 Course thisCourse = getItem(position);
                 mainViewHolder = (ScheduleViewHolder) convertView.getTag();
                 //manually set the data of list view items here//
-                mainViewHolder.number.setText(thisCourse.getNumber());
+                mainViewHolder.number.setText(thisCourse.getDepartment() + " " + thisCourse.getNumber() + "." +  thisCourse.getSection());
                 mainViewHolder.name.setText(thisCourse.getName());
                 mainViewHolder.instructor.setText(thisCourse.getInstructor());
                 mainViewHolder.meetTime.setText(thisCourse.getMeetTime());
