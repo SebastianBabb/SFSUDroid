@@ -8,8 +8,8 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="woverines.myapplication.MainActivity$PlaceholderFragment">
 
-    <TextView
-        android:id="@+id/section_label"
+    <FrameLayout
+        android:id="@+id/campus_map"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 

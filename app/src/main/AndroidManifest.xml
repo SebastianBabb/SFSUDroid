@@ -60,6 +60,11 @@
             android:name=".activity.AlertsActivity"
             android:theme="@style/AppTheme"
             android:windowSoftInputMode="adjustPan"/>
+
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyBYcr7z6AgRyh_5RM4k3BwUeHdfUPLAlfQ"/>
+
     </application>
 
 </manifest>
