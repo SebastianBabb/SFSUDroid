@@ -54,9 +54,6 @@ public class SchedulePlanner extends AppCompatActivity {
         //create array of myCourses
         courseArrayList = new ArrayList<>();
 
-
-
-
         genRadomClassesB = (Button) findViewById(R.id.gen_random_classes);
         genRadomClassesB.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -95,8 +92,30 @@ public class SchedulePlanner extends AppCompatActivity {
 //        add_class_ib = (Button) findViewById(R.id.)
 
 //        generateClasses();
+        setDemoCourseList();
         displaySchedule();
      }
+
+    private void setDemoCourseList() {
+        courseArrayList = new ArrayList<>();
+        courseArrayList.add(new Course(2365, "CSC", "668", "01", "Advanced Object Oriented Programming", "Tu, Th", "11:00AM - 12:10PM", "Thornton Hall 310", "Barry Levine", "Students will learn advanced object-oriented programming techniques through group-work"));
+        courseArrayList.add(new Course(2361, "CSC", "256", "03", "Machine Structure", "Th", "4:10PM - 6:55PM", "Science Building 101", "Tsun-Yuk Hsu", "Prerequisite: CSC 230 or CSC 330 with grade of C or better. Digital logic circuits; data representation; assembly language programming; subroutine linkage; machine language encoding; interrupt/exception handling; memory system concepts; CPU organization and performance."));
+        courseArrayList.add(new Course(2372, "CSC", "413", "02", "Software Development", "M, W, F", "12:10PM - 1:00PM", "Thornton Hall 329", "Marc Sosnick", "Prerequisites: CSC 340 and CSC 412 with grades of C or better. \n" +
+                "Modern software applications. Object-oriented techniques: encapsulation, inheritance, and poly-morphism as mechanism for data design and problem solution. Software design, debugging, testing, and UI design. Software maintenance. Software development tools. Extra fee required. (Plus-minus letter grade only)"));
+        courseArrayList.add(new Course(2378, "CSC", "667", "01", "Internet Application Design and Development", "M", "7:00PM - 9:45PM", "Thornton Hall 210", "John Roberts", "Prerequisite: CSC 413 with grade of C or better or consent of instructor.\n" +
+                "Fundamental technologies on which WWW is based. Extra fee required.\n" +
+                "(CSC 667/CSC 867 is a paired course offering. Students who complete the course at one level may not repeat the course at the other level.)"));
+        courseArrayList.add(new Course(4789, "SW", "352", "01", "Gender, Sexism, and Social Welfare", "Th", "9:35AM - 12:20PM", "Burk Hall 251", "Jocelyn Hermoso", "Prerequisite: Restricted to upper division social work majors.\n" +
+                "Sex role stereotyping in the policies, practices, and organization of social welfare institutions; practice of social workers."));
+        }
+
+    private void generateDemoEvents()
+    {
+        eventArray = new ArrayList<Event>();
+        eventArray.add(new Event(0, 12.00, "Class Starts"));
+        eventArray.add(new Event(1, 5.00, "Assignment 3 Due"));
+
+    }
 
     public void generateClasses()
     {

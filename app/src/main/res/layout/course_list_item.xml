@@ -2,51 +2,80 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent" android:layout_height="match_parent">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Course Number"
-        android:id="@+id/course_number"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Course Name"
-        android:id="@+id/course_name"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Course Instructor"
-        android:id="@+id/course_instructor"
-        android:layout_below="@+id/course_name"
-        android:layout_alignParentStart="true" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Meet time"
-        android:id="@+id/course_meet_time"
-        android:layout_below="@+id/course_name"
-        android:layout_alignStart="@+id/course_name" />
-
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/course_image"
-        android:src="@android:drawable/ic_menu_search"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginEnd="20dp" />
+        android:src="@drawable/ic_chevron_right_24dp"
+        android:layout_marginEnd="22dp"
+        android:layout_alignParentEnd="true" />
 
-    <Space
-        android:layout_width="20px"
-        android:layout_height="20px"
-        android:layout_below="@+id/course_instructor"
-        android:layout_alignParentStart="true"
-        android:layout_alignEnd="@+id/course_image" />
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingBottom="20dp"
+        android:layout_centerHorizontal="true">
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Course Number"
+                android:textSize="20dp"
+                android:padding="6dp"
+                android:textAllCaps="true"
+                android:id="@+id/course_number"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentStart="true" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Course Name"
+                android:textSize="18dp"
+                android:padding="6dp"
+                android:id="@+id/course_name"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Course Instructor"
+                android:textSize="16dp"
+                android:padding="4dp"
+                android:id="@+id/course_instructor"
+                android:layout_below="@+id/course_name"
+                android:layout_alignParentStart="true" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Meet time"
+                android:textSize="16dp"
+                android:padding="4dp"
+                android:id="@+id/course_meet_time"
+                android:layout_below="@+id/course_name"
+                android:layout_alignStart="@+id/course_name" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="New Text"
+                android:textSize="16dp"
+                android:padding="4dp"
+                android:id="@+id/course_meet_room" />
+        </LinearLayout>
+    </LinearLayout>
 </RelativeLayout>
