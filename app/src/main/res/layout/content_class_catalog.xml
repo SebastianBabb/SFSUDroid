@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="woverines.sfsuapp.activity.ClassCatalog"
+    tools:showIn="@layout/activity_class_catalog">
+
+    <!--search bar-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/activity_horizontal_margin"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:layout_marginBottom="8dp"
+        android:orientation="horizontal"
+        android:descendantFocusability="beforeDescendants"
+        android:focusableInTouchMode="true" >
+
+        <AutoCompleteTextView
+            android:id="@+id/department_input"
+            android:layout_width="0dp"
+            android:layout_height="32dp"
+            android:layout_marginRight="8dp"
+            android:layout_weight="1"
+            android:completionThreshold="1"
+            android:background="@drawable/input"
+            android:hint="Department..."
+            android:padding="8dp"
+            android:textSize="14sp" />
+
+        <AutoCompleteTextView
+            android:id="@+id/course_number_input"
+            android:layout_width="0dp"
+            android:layout_height="32dp"
+            android:layout_weight="1"
+            android:background="@drawable/input"
+            android:hint="Course number..."
+            android:padding="8dp"
+            android:textSize="14sp" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:src="@drawable/ic_search_black_48dp"
+            android:onClick="filterCourses"/>
+    </LinearLayout>
+
+    <!--course list-->
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/catalog_course_list"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:paddingStart="@dimen/activity_horizontal_margin"
+        android:paddingEnd="@dimen/activity_horizontal_margin"
+        android:background="@android:color/white"
+        android:layout_weight="1" />
+</LinearLayout>

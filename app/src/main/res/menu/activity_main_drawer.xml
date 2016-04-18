@@ -1,28 +1,63 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <group android:checkableBehavior="single">
-        <item
-            android:id="@+id/nav_camera"
-            android:icon="@drawable/ic_menu_camera"
-            android:title="Import" />
-        <item
-            android:id="@+id/nav_gallery"
-            android:icon="@drawable/ic_menu_gallery"
-            android:title="Gallery" />
-        <item
-            android:id="@+id/nav_slideshow"
-            android:icon="@drawable/ic_menu_slideshow"
-            android:title="Slideshow" />
+    <!--<group android:checkableBehavior="single">-->
+        <!--<item-->
+            <!--android:id="@+id/campus_map"-->
+            <!--android:icon="@android:drawable/ic_dialog_map"-->
+            <!--android:title="Campus Map" />-->
+        <!--<item-->
+            <!--android:id="@+id/shuttle"-->
+            <!--android:icon="@android:drawable/ic_menu_help"-->
+            <!--android:title="Shuttle Schedule" />-->
 
-    </group>
+
+    <!--</group>-->
+    <item
+        android:id="@+id/schedule_planner"
+        android:icon="@android:drawable/btn_star_big_on"
+        android:title="My Schedule" />
+
+    <item
+        android:id="@+id/staff_directory"
+        android:icon="@android:drawable/ic_dialog_info"
+        android:title="Staff Directory" />
+
+    <item android:title="Resources">
+        <menu>
+            <item
+                android:id="@+id/home_page"
+                android:icon="@android:drawable/ic_menu_manage"
+                android:title="Home" />
+            <item
+                android:id="@+id/campus_map"
+                android:icon="@drawable/ic_menu_manage"
+                android:title="Campus Map" />
+            <item
+                android:id="@+id/shuttle"
+                android:icon="@drawable/ic_menu_manage"
+                android:title="Shuttle Schedule" />
+            <item
+                android:id="@+id/resources"
+                android:icon="@drawable/ic_menu_manage"
+                android:title="Helpful links" />
+            <item
+                android:id="@+id/gallery"
+                android:icon="@drawable/ic_menu_manage"
+                android:title="Gallery" />
+
+        </menu>
+    </item>
+
 
     <item android:title="Options">
         <menu>
+
             <item
-                android:id="@+id/nav_manage"
+                android:id="@+id/settings"
                 android:icon="@drawable/ic_menu_manage"
                 android:title="Settings" />
+
         </menu>
     </item>
 

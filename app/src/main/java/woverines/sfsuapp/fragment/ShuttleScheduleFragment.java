@@ -1,4 +1,4 @@
-package woverines.sfsuapp;
+package woverines.sfsuapp.fragment;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -7,11 +7,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import woverines.sfsuapp.R;
+
 
 /**
  * A placeholder fragment containing a simple view.
  */
-public class PlaceholderFragment extends Fragment {
+public class ShuttleScheduleFragment extends Fragment {
     /**
      * The fragment argument representing the section number for this
      * fragment.
@@ -19,7 +21,7 @@ public class PlaceholderFragment extends Fragment {
     private static final String ARG_SECTION_NUMBER = "section_number";
     private static final String ARG_TEXT = "text";
 
-    public PlaceholderFragment() {
+    public ShuttleScheduleFragment() {
     }
 
     /**
@@ -27,9 +29,9 @@ public class PlaceholderFragment extends Fragment {
      * number.
      *
      */
-    public static PlaceholderFragment newInstance(int sectionNumber, String text) {
+    public static ShuttleScheduleFragment newInstance(int sectionNumber, String text) {
 
-        PlaceholderFragment fragment = new PlaceholderFragment();
+        ShuttleScheduleFragment fragment = new ShuttleScheduleFragment();
         Bundle args = new Bundle();
         args.putInt(ARG_SECTION_NUMBER, sectionNumber);
         args.putString(ARG_TEXT, text);
@@ -40,10 +42,19 @@ public class PlaceholderFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_main, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_shuttle_schedule, container, false);
         Bundle args = getArguments();
-        TextView textView = (TextView) rootView.findViewById(R.id.section_label);
+        final TextView textView = (TextView) rootView.findViewById(R.id.section_label);
         textView.setText(args.getString(ARG_TEXT));
+
+//        Button button = (Button) rootView.findViewById(R.id.button1);
+//        button.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                textView.setText("Random: " + Math.random());
+//            }
+//        });
+
         return rootView;
     }
 }

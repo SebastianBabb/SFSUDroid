@@ -1,4 +1,4 @@
-package settings;
+package woverines.sfsuapp.settings;
 
 import android.content.res.Configuration;
 import android.os.Bundle;
