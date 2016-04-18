@@ -2,15 +2,11 @@ package woverines.sfsuapp.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
-import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -21,10 +17,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import woverines.sfsuapp.R;
-import woverines.sfsuapp.api.Callback;
-import woverines.sfsuapp.api.HttpRequestorManager;
 import woverines.sfsuapp.fragment.CampusMapFragment;
-import woverines.sfsuapp.fragment.Gallery;
 import woverines.sfsuapp.fragment.HomePageFragment;
 import woverines.sfsuapp.fragment.ResourcesFragment;
 import woverines.sfsuapp.fragment.ShuttleScheduleFragment;
@@ -61,18 +54,7 @@ public class MainActivity extends AppCompatActivity
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
         //HIDES TABs
-//        tabLayout.setVisibility(View.GONE);
-
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
-
+        
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -132,7 +114,7 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.schedule_planner) {
             onAddClassAction();
         } else if (id == R.id.staff_directory) {
-            onGoToStaffDirectoryAction();
+            showStaffDirectory();
         } else if (id == R.id.settings) {
             onOptionsItemSelected();
         }
@@ -209,7 +191,7 @@ public class MainActivity extends AppCompatActivity
         startActivity(goToSchedule);
     }
 
-    private void onGoToStaffDirectoryAction() {
+    private void showStaffDirectory() {
         Intent goToStaffDirectory = new Intent(this, StaffDirectory.class);
 
         startActivity(goToStaffDirectory);

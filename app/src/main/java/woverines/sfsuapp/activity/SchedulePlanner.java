@@ -4,7 +4,6 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
@@ -13,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -29,6 +29,7 @@ public class SchedulePlanner extends AppCompatActivity {
     public ArrayList<Course> courseArrayList;
     public ListView courseListView;
     public Dialog courseDetailDialog;
+    public Button add_alert_b;
 
     TextView detailNameTV;
     TextView detailTimeTV;
@@ -71,7 +72,6 @@ public class SchedulePlanner extends AppCompatActivity {
 
         //SET UP REVIEW DIALOG
         courseDetailDialog = new Dialog(SchedulePlanner.this);
-
         courseDetailDialog.setContentView(R.layout.course_details_dialog);
         courseDetailDialog.setTitle("Course Options");
 
@@ -80,30 +80,19 @@ public class SchedulePlanner extends AppCompatActivity {
         detailNameTV = (TextView) courseDetailDialog.findViewById(R.id.dialog_course_name);
         detailInstructorTV = (TextView) courseDetailDialog.findViewById(R.id.dialog_meet_time);
         detailTimeTV = (TextView) courseDetailDialog.findViewById(R.id.dialog_meet_time);
-
-        //connecting Buttons to dialog
         detailCancelB = (Button) courseDetailDialog.findViewById(R.id.dialog_cancel_button);
         detailAddEventB = (Button) courseDetailDialog.findViewById(R.id.dialog_add_event);
 
-        FloatingActionButton add_class_fab = (FloatingActionButton) findViewById(R.id.add_class_fab);
-        add_class_fab.setOnClickListener(new View.OnClickListener() {
+        ImageButton add_class_ib = (ImageButton) findViewById(R.id.add_course_ib);
+        add_class_ib.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent goToClassCatalog = new Intent(v.getContext(), ClassCatalog.class);
-
-                startActivity(goToClassCatalog);
+                goToCatalog();
             }
         });
-
-//        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-//        fab.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-//                        .setAction("Action", null).show();
-//            }
-//        });
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+//        add_class_ib = (Button) findViewById(R.id.)
 
 //        generateClasses();
         displaySchedule();
@@ -111,10 +100,8 @@ public class SchedulePlanner extends AppCompatActivity {
 
     public void generateClasses()
     {
-//        if(scheduleAdapter.getCount() != 0)
-            scheduleAdapter.clear();
+        scheduleAdapter.clear();
 
-        //generate random data for testing
         Course tempCourse = new Course(1, "668", "Advanced OOP", "Levine", "11:00 - 12:15", "somethign something...");
         courseArrayList.add(tempCourse);
 
@@ -164,7 +151,7 @@ public class SchedulePlanner extends AppCompatActivity {
                 detailAddEventB.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-//                        goToAddEvent();
+                        goToAlerts();
                     }
                 });
 
@@ -175,7 +162,6 @@ public class SchedulePlanner extends AppCompatActivity {
                         courseDetailDialog.dismiss();
                     }
                 });
-
                 //dialog has been prepared, display it.
                 courseDetailDialog.show();
             }
@@ -183,6 +169,19 @@ public class SchedulePlanner extends AppCompatActivity {
         });
     }
 
+    public void goToAlerts()
+    {
+        Intent goToAlertsIntent = new Intent(this, AlertsActivity.class);
+        startActivity(goToAlertsIntent);
+
+    }
+
+
+    public void goToCatalog() {
+        Intent goToCatalog = new Intent(this, ClassCatalog.class);
+
+        startActivity(goToCatalog);
+    }
 
 
     /**
@@ -241,16 +240,12 @@ public class SchedulePlanner extends AppCompatActivity {
                 viewHolder.instructor = (TextView) convertView.findViewById(R.id.course_instructor);
                 viewHolder.meetTime = (TextView) convertView.findViewById(R.id.course_meet_time);
 
-
                 //setting info
                 viewHolder.name.setText(getItem(position).getName().toString());
                 viewHolder.number.setText(getItem(position).getNumber().toString());
                 viewHolder.instructor.setText(getItem(position).getInstructor().toString());
                 viewHolder.meetTime.setText(getItem(position).getMeetTime().toString());
-
-
-                    /*
-                    add a reference of this object into convertView, so we convertView != null
+                    /*   add a reference of this object into convertView, so we convertView != null
                         we can retrieve the object and directly set the new data to the ScheduleViewHolder items
                          (recyle this object)
                      */
@@ -263,7 +258,6 @@ public class SchedulePlanner extends AppCompatActivity {
                 mainViewHolder.name.setText(thisCourse.getName());
                 mainViewHolder.instructor.setText(thisCourse.getInstructor());
                 mainViewHolder.meetTime.setText(thisCourse.getMeetTime());
-
             }
 
             return convertView;
