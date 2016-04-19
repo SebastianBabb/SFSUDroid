@@ -10,16 +10,18 @@ import com.android.volley.toolbox.JsonObjectRequest;
 
 import org.json.JSONObject;
 
+import woverines.sfsuapp.models.NULLOBJ;
+
 
 public class HttpRequestorManager {
 
     private static HttpRequestorManager ourInstance;
     private Context mContext;
-    private static String mUrl_Request;
 
-    public static HttpRequestorManager getInstance(Context ctx) {
+    public static HttpRequestorManager initialize(Context ctx) {
         if(ourInstance == null){
-            return new HttpRequestorManager(ctx);
+            ourInstance = new HttpRequestorManager(ctx);
+            return ourInstance;
         }
         return ourInstance;
     }
@@ -35,10 +37,9 @@ public class HttpRequestorManager {
     }
 
     public void makeRESTRequest(String URL, final Callback callback){
-        String url = "http://ironsquishy.com:5656/api/example";
 
         JsonObjectRequest jsObjRequest = new JsonObjectRequest
-                (Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+                (Request.Method.GET, URL, null, new Response.Listener<JSONObject>() {
 
                     @Override
                     public void onResponse(JSONObject response) {
@@ -48,7 +49,7 @@ public class HttpRequestorManager {
 
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        callback.error(error);
+                        callback.error(new NULLOBJ());
                     }
                 });
 

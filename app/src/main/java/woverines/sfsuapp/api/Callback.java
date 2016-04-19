@@ -1,10 +1,9 @@
 package woverines.sfsuapp.api;
 
-/**
- * Created by ironsquishy on 4/12/16.
- */
+import woverines.sfsuapp.models.NULLOBJ;
+
 abstract public class Callback {
     public abstract void response(Object object);
-    public abstract void error(Object object);
+    public abstract void error(NULLOBJ nullObj);
 }
 

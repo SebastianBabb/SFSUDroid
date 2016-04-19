@@ -11,21 +11,14 @@ import java.util.concurrent.Future;
 
 import woverines.sfsuapp.models.CoursesModels;
 import woverines.sfsuapp.models.ForumsModel;
+import woverines.sfsuapp.models.NULLOBJ;
 import woverines.sfsuapp.models.ReviewsModel;
 
 public class API_RequestBuilder {
-    private String mURL;
-    private int flag;
 
     public API_RequestBuilder(){
         //default constructor.
     }
-
-    public API_RequestBuilder(String pURL){
-        this.mURL = pURL;
-    }
-
-
 
     public void populateModel(String paramAPI, Object model, final Callback callback){
 
@@ -59,8 +52,8 @@ public class API_RequestBuilder {
             }
 
              @Override
-             public void error(Object object) {
-                 //TODO handle error;
+             public void error(NULLOBJ nullobj) {
+                 callback.error(nullobj);
              }
          };
 
