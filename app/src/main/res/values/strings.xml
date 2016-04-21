@@ -5,6 +5,7 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
     <string name="action_settings">Settings</string>
+    <string name="action_save">Save</string>
     <string name="title_activity_settings">Settings</string>
 
     <!-- Strings related to Settings -->
@@ -69,13 +70,16 @@
     <string name="title_activity_class_catalog">ClassCatalog</string>
 
     <string name="alert_text">Alert Text</string>
+    <string name="alert_text_required">Alert text is required.</string>
     <string name="time">Time</string>
     <string name="reminder">Reminder</string>
     <string name="alert_sound">Alert Sound</string>
+    <string name="alert_sound_default">Default Sound</string>
     <string name="options">Options</string>
     <string name="vibrate">Vibrate</string>
     <string name="repeat">Repeat</string>
     <string-array name="reminder_array">
+        <item>On Time</item>
         <item>5 Minutes</item>
         <item>10 Minutes</item>
         <item>15 Minutes</item>

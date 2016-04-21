@@ -110,7 +110,7 @@
                 android:layout_height="50dp"
                 android:layout_marginStart="10dp"
                 android:gravity="center_vertical"
-                android:text="Default Ringtone"
+                android:text="@string/alert_sound_default"
                 android:textSize="16sp"/>
         </LinearLayout>
 
