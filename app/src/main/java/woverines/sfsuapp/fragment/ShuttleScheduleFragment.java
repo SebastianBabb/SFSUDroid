@@ -21,6 +21,8 @@ public class ShuttleScheduleFragment extends Fragment {
     private static final String ARG_SECTION_NUMBER = "section_number";
     private static final String ARG_TEXT = "text";
 
+    
+
     public ShuttleScheduleFragment() {
     }
 
