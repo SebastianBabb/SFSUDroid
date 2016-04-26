@@ -23,15 +23,18 @@ public class DBHandler extends SQLiteOpenHelper {
          * @author Allen Space
          * Description: Constructor for SQLiteHandler the follow are its params
          * @param context Used call, can use this keyword for passsing
-         * @param name    Can be set for setting different database name, default database.
          * @param factory CursorFactory for SQLITEDATABASE class
-         * @param version For SQL Database version default set to 1.
          *
          */
-        public DBHandler(Context context, String name, SQLiteDatabase.CursorFactory factory, int version)
+        public DBHandler(Context context, SQLiteDatabase.CursorFactory factory)
         {
             super(context, DATABASE_NAME, factory, DATABASE_VERSION);
 
+        }
+
+        public DBHandler(Context context)
+        {
+            this(context, null);
         }
 
         /**
