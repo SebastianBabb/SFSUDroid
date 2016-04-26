@@ -13,14 +13,20 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import woverines.sfsuapp.R;
+import woverines.sfsuapp.api.API_RequestBuilder;
+import woverines.sfsuapp.api.Callback;
+import woverines.sfsuapp.api.HttpRequestorManager;
 import woverines.sfsuapp.fragment.CampusMapFragment;
 import woverines.sfsuapp.fragment.HomePageFragment;
 import woverines.sfsuapp.fragment.ResourcesFragment;
 import woverines.sfsuapp.fragment.ShuttleScheduleFragment;
+import woverines.sfsuapp.models.DepartmentsModel;
+import woverines.sfsuapp.models.NULLOBJ;
 import woverines.sfsuapp.settings.SettingsActivity;
 
 public class MainActivity extends AppCompatActivity
@@ -35,12 +41,34 @@ public class MainActivity extends AppCompatActivity
      */
     private ViewPager mViewPager;
 
+    //TODO remove variable.
+    private API_RequestBuilder api_requestBuilder;
+    private DepartmentsModel data;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        //TODO remove before pushing to repo.
+        HttpRequestorManager.initialize(this);
+
+        api_requestBuilder = new API_RequestBuilder();
+
+        api_requestBuilder.populateModel("ALL", this.data, new Callback() {
+            @Override
+            public void response(Object object) {
+                data  = (DepartmentsModel) object;
+            }
+
+            @Override
+            public void error(NULLOBJ nullObj) {
+
+            }
+        });
+
 
 
         // Create the adapter that will return a fragment for each of the three
