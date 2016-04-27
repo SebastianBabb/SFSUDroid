@@ -7,22 +7,24 @@ package woverines.sfsuapp.database;
 
 public class Alerts {
 
-    private int alertID;
+    private long alertID;
     private int courseID;
+    private String text;
     private int mVibrate;
     private int mReapeat;
 
-    private String mTime;
-    private String mReminder;
+    private long mTime;
+    private int mReminder;
     private String mSound;
 
     public Alerts(){
         //default constructor
     }
 
-    public Alerts(int id, int courseid, String time, String text, String reminder, String sound, int vibrate, int repeat){
+    public Alerts(long id, int courseid, long time, String text, int reminder, String sound, int vibrate, int repeat){
         this.alertID = id;
         this.courseID = courseid;
+        this.text = text;
         this.mVibrate = vibrate;
         this.mReapeat = repeat;
         this.mTime = time;
@@ -30,7 +32,7 @@ public class Alerts {
         this.mSound = sound;
     }
 
-    public int getAlertID() {
+    public long getAlertID() {
         return alertID;
     }
 
@@ -44,6 +46,14 @@ public class Alerts {
 
     public void setCourseID(int courseID) {
         this.courseID = courseID;
+    }
+
+    public String getText() {
+        return text;
+    }
+
+    public void setText(String text) {
+        this.text = text;
     }
 
     public int getmVibrate() {
@@ -62,19 +72,19 @@ public class Alerts {
         this.mReapeat = mReapeat;
     }
 
-    public String getmTime() {
+    public long getmTime() {
         return mTime;
     }
 
-    public void setmTime(String mTime) {
+    public void setmTime(long mTime) {
         this.mTime = mTime;
     }
 
-    public String getmReminder() {
+    public int getmReminder() {
         return mReminder;
     }
 
-    public void setmReminder(String mReminder) {
+    public void setmReminder(int mReminder) {
         this.mReminder = mReminder;
     }
 

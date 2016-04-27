@@ -47,7 +47,7 @@ public class DBHandler extends SQLiteOpenHelper {
         public void onCreate(SQLiteDatabase db)
         {
             //TODO Create run all Create Tables Query here!!!!!!
-            //db.execSQL("NEEDS QUERY");
+            db.execSQL(ALERTS_TABLE.CREATE_QUERY);
 
             Log.i(TAG, "Properly Created Database..");
         }
