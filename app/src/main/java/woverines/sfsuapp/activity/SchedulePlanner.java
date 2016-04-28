@@ -13,6 +13,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -33,7 +34,7 @@ public class SchedulePlanner extends AppCompatActivity {
     private static final int REQUEST_CODE_ALERTS = 1;
 
     private static final SimpleDateFormat DATE_FORMAT =
-        new SimpleDateFormat("h:mm a", Locale.getDefault());
+        new SimpleDateFormat("MMM d, yyyy h:mm a", Locale.getDefault());
 
     private ScheduleListAdapter scheduleAdapter;
     public ArrayList<Course> courseArrayList;
@@ -187,12 +188,11 @@ public class SchedulePlanner extends AppCompatActivity {
                 detailAlerts.removeAllViews();
 
                 final int courseId = courseArrayList.get(position).getId();
-                List<Alerts> alerts = ALERTS_TABLE.getAlerts(getApplicationContext(), courseId,
-                    System.currentTimeMillis());
+                List<Alerts> alerts = ALERTS_TABLE.getAlerts(getApplicationContext(), courseId, 0);
 
                 if (!alerts.isEmpty()) {
-                    for (final Alerts alert : alerts) {
-                        insertAlert(alert);
+                    for (Alerts alert : alerts) {
+                        insertAlert(alert, -1);
                     }
                 }
 
@@ -249,17 +249,30 @@ public class SchedulePlanner extends AppCompatActivity {
                     alert.repeat ? 1 : 0
                 );
 
-                insertAlert(instance);
+                insertAlert(instance, 0);
             }
         }
     }
 
-    private void insertAlert(final Alerts alert) {
+    private void insertAlert(final Alerts alert, int position) {
         LayoutInflater inflater = LayoutInflater.from(this);
         View view = inflater.inflate(R.layout.alerts_list_item, detailAlerts, false);
 
-        ((TextView) view.findViewById(R.id.text)).setText(alert.getText());
-        ((TextView) view.findViewById(R.id.time)).setText(DATE_FORMAT.format(alert.getmTime()));
+        TextView text = (TextView) view.findViewById(R.id.text);
+        text.setText(alert.getText());
+
+        TextView time = (TextView) view.findViewById(R.id.time);
+        time.setText(DATE_FORMAT.format(alert.getmTime()));
+
+        if (alert.getmTime() < System.currentTimeMillis()) {
+            int color = getResources().getColor(android.R.color.darker_gray);
+
+            ImageView icon = (ImageView) view.findViewById(R.id.icon);
+            icon.setColorFilter(color);
+
+            text.setTextColor(color);
+            time.setTextColor(color);
+        }
 
         view.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -268,7 +281,11 @@ public class SchedulePlanner extends AppCompatActivity {
             }
         });
 
-        detailAlerts.addView(view);
+        if (position < 0) {
+            detailAlerts.addView(view);
+        } else {
+            detailAlerts.addView(view, position);
+        }
     }
 
     public void goToCatalog()
