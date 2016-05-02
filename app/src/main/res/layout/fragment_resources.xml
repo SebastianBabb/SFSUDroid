@@ -17,11 +17,11 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Official Site: http://www.sfsu.edu/"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="@string/sfsu_links"
         android:id="@+id/official_site"
-        android:textColor="@color/colorAccent"
         android:layout_below="@+id/section_label"
-        android:layout_toEndOf="@+id/section_label" />
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true" />
 
 </RelativeLayout>
