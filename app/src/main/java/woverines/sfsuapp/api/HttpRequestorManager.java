@@ -7,19 +7,26 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.google.gson.Gson;
 
 import org.json.JSONObject;
+
+import woverines.sfsuapp.models.CoursesModels;
+import woverines.sfsuapp.models.DepartmentsModel;
+import woverines.sfsuapp.models.ForumsModel;
+import woverines.sfsuapp.models.NULLOBJ;
+import woverines.sfsuapp.models.ReviewsModel;
 
 
 public class HttpRequestorManager {
 
     private static HttpRequestorManager ourInstance;
     private Context mContext;
-    private static String mUrl_Request;
 
-    public static HttpRequestorManager getInstance(Context ctx) {
+    public static HttpRequestorManager initialize(Context ctx) {
         if(ourInstance == null){
-            return new HttpRequestorManager(ctx);
+            ourInstance = new HttpRequestorManager(ctx);
+            return ourInstance;
         }
         return ourInstance;
     }
@@ -34,21 +41,40 @@ public class HttpRequestorManager {
         this.mContext = ctx.getApplicationContext();
     }
 
-    public void makeRESTRequest(String URL, final Callback callback){
-        String url = "http://ironsquishy.com:5656/api/example";
+    public void makeRESTRequest(String URL, String state, final Callback callback){
 
+        final String flag = state;
         JsonObjectRequest jsObjRequest = new JsonObjectRequest
-                (Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+                (Request.Method.GET, URL, null, new Response.Listener<JSONObject>() {
 
                     @Override
                     public void onResponse(JSONObject response) {
-                       callback.response(response);
+
+                        if (flag == "courses") {
+                            CoursesModels data = new Gson().fromJson(response.toString(), CoursesModels.class);
+                            callback.response(data);
+                        }
+
+                        if(flag == "forums") {
+                            ForumsModel data =  new Gson().fromJson(response.toString(), ForumsModel.class);
+                            callback.response(data);
+                        }
+
+                        if(flag == "reviews") {
+                            ReviewsModel data = new Gson().fromJson(response.toString(), ReviewsModel.class);
+                            callback.response(data);
+                        }
+
+                        if(flag == "departments") {
+                            DepartmentsModel data = new Gson().fromJson(response.toString(), DepartmentsModel.class);
+                            callback.response(data);
+                        }
                     }
                 }, new Response.ErrorListener() {
 
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        callback.error(error);
+                        callback.error(new NULLOBJ());
                     }
                 });
 

@@ -13,17 +13,28 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
 import java.util.Random;
 
 import woverines.sfsuapp.R;
+import woverines.sfsuapp.database.ALERTS_TABLE;
+import woverines.sfsuapp.database.Alerts;
 import woverines.sfsuapp.database.Course;
 import woverines.sfsuapp.database.Event;
 
 public class SchedulePlanner extends AppCompatActivity {
+
+    private static final int REQUEST_CODE_ALERTS = 1;
+
+    private static final SimpleDateFormat DATE_FORMAT =
+        new SimpleDateFormat("MMM d, yyyy h:mm a", Locale.getDefault());
 
     private ScheduleListAdapter scheduleAdapter;
     public ArrayList<Course> courseArrayList;
@@ -38,6 +49,8 @@ public class SchedulePlanner extends AppCompatActivity {
     TextView detailDescriptionTV;
     Button detailCancelB;
     Button detailAddEventB;
+
+    private ViewGroup detailAlerts;
 
 //    private
     public ArrayList<Event> eventArray;
@@ -76,6 +89,7 @@ public class SchedulePlanner extends AppCompatActivity {
         detailInstructorTV = (TextView) courseDetailDialog.findViewById(R.id.dialog_meet_time);
         detailTimeTV = (TextView) courseDetailDialog.findViewById(R.id.dialog_meet_time);
         detailDescriptionTV = (TextView) courseDetailDialog.findViewById(R.id.dialog_course_description);
+        detailAlerts = (ViewGroup) courseDetailDialog.findViewById(R.id.listView);
         detailCancelB = (Button) courseDetailDialog.findViewById(R.id.dialog_cancel_button);
         detailAddEventB = (Button) courseDetailDialog.findViewById(R.id.dialog_add_event);
 
@@ -93,6 +107,17 @@ public class SchedulePlanner extends AppCompatActivity {
         setDemoCourseList();
         displaySchedule();
      }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode) {
+            case REQUEST_CODE_ALERTS:
+                handleAlert(resultCode, data);
+                break;
+        }
+
+        super.onActivityResult(resultCode, resultCode, data);
+    }
 
     private void setDemoCourseList() {
         courseArrayList = new ArrayList<>();
@@ -160,11 +185,22 @@ public class SchedulePlanner extends AppCompatActivity {
                 detailTimeTV.setText(courseArrayList.get(position).getMeetTime());
                 detailDescriptionTV.setText(courseArrayList.get(position).getDescription());
 
+                detailAlerts.removeAllViews();
+
+                final int courseId = courseArrayList.get(position).getId();
+                List<Alerts> alerts = ALERTS_TABLE.getAlerts(getApplicationContext(), courseId, 0);
+
+                if (!alerts.isEmpty()) {
+                    for (Alerts alert : alerts) {
+                        insertAlert(alert, -1);
+                    }
+                }
+
                 //add go to addEven activity
                 detailAddEventB.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        goToAlerts();
+                        goToAlerts(courseId, null);
                     }
                 });
 
@@ -182,10 +218,74 @@ public class SchedulePlanner extends AppCompatActivity {
         });
     }
 
-    public void goToAlerts()
+    public void goToAlerts(int courseId, Alerts alert)
     {
+        AlertsActivity.Alert instance = null;
+        if (alert != null) {
+            instance = new AlertsActivity.Alert(alert);
+        }
+
         Intent goToAlertsIntent = new Intent(this, AlertsActivity.class);
-        startActivity(goToAlertsIntent);
+        goToAlertsIntent.putExtra(AlertsActivity.EXTRA_COURSE_ID, courseId);
+        goToAlertsIntent.putExtra(AlertsActivity.EXTRA_ALERT, instance);
+
+        startActivityForResult(goToAlertsIntent, REQUEST_CODE_ALERTS);
+    }
+
+    public void handleAlert(int resultCode, Intent data) {
+        if (resultCode == RESULT_OK) {
+            int courseId = data.getIntExtra(AlertsActivity.EXTRA_COURSE_ID, 0);
+            AlertsActivity.Alert alert = data.getParcelableExtra(AlertsActivity.EXTRA_ALERT);
+
+            if (alert != null) {
+                Alerts instance = new Alerts(
+                    alert.id,
+                    courseId,
+                    alert.time,
+                    alert.alertText,
+                    alert.reminder,
+                    alert.sound != null ? alert.sound.toString() : null,
+                    alert.vibrate ? 1 : 0,
+                    alert.repeat ? 1 : 0
+                );
+
+                insertAlert(instance, 0);
+            }
+        }
+    }
+
+    private void insertAlert(final Alerts alert, int position) {
+        LayoutInflater inflater = LayoutInflater.from(this);
+        View view = inflater.inflate(R.layout.alerts_list_item, detailAlerts, false);
+
+        TextView text = (TextView) view.findViewById(R.id.text);
+        text.setText(alert.getText());
+
+        TextView time = (TextView) view.findViewById(R.id.time);
+        time.setText(DATE_FORMAT.format(alert.getmTime()));
+
+        if (alert.getmTime() < System.currentTimeMillis()) {
+            int color = getResources().getColor(android.R.color.darker_gray);
+
+            ImageView icon = (ImageView) view.findViewById(R.id.icon);
+            icon.setColorFilter(color);
+
+            text.setTextColor(color);
+            time.setTextColor(color);
+        }
+
+        view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                goToAlerts(alert.getCourseID(), alert);
+            }
+        });
+
+        if (position < 0) {
+            detailAlerts.addView(view);
+        } else {
+            detailAlerts.addView(view, position);
+        }
     }
 
     public void goToCatalog()
