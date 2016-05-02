@@ -12,6 +12,7 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -57,7 +58,7 @@ public class ClassCatalog extends AppCompatActivity implements ClassCatalogAdapt
         courseNumberInput = (TextView) findViewById(R.id.course_number_input);
 
         courseDetailDialog = new Dialog(this);
-        courseDetailDialog.setContentView(R.layout.course_details_dialog);
+        courseDetailDialog.setContentView(R.layout.catalog_details_dialog);
         courseDetailDialog.setTitle("Course Options");
         //connecting TextViews to dialog
         detailNumberTV = (TextView) courseDetailDialog.findViewById(R.id.dialog_course_number);
@@ -73,11 +74,13 @@ public class ClassCatalog extends AppCompatActivity implements ClassCatalogAdapt
                 courseDetailDialog.dismiss();
             }
         });
-        Button detailAddEventB = (Button) courseDetailDialog.findViewById(R.id.dialog_add_event);
+        Button detailAddEventB = (Button) courseDetailDialog.findViewById(R.id.dialog_add_class);
         detailAddEventB.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 //TODO: add course to schedule
+                Toast toast = Toast.makeText(getApplicationContext(), "*Class added (not functional)", Toast.LENGTH_LONG);
+                toast.show();
             }
         });
 
