@@ -25,6 +25,7 @@ import woverines.sfsuapp.fragment.CampusMapFragment;
 import woverines.sfsuapp.fragment.HomePageFragment;
 import woverines.sfsuapp.fragment.ResourcesFragment;
 import woverines.sfsuapp.fragment.ShuttleScheduleFragment;
+import woverines.sfsuapp.models.CoursesModels;
 import woverines.sfsuapp.models.DepartmentsModel;
 import woverines.sfsuapp.models.NULLOBJ;
 import woverines.sfsuapp.settings.SettingsActivity;
@@ -43,7 +44,7 @@ public class MainActivity extends AppCompatActivity
 
     //TODO remove variable.
     private API_RequestBuilder api_requestBuilder;
-    private DepartmentsModel data;
+    private CoursesModels data;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,24 +53,23 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        //TODO remove before pushing to repo.
-        HttpRequestorManager.initialize(this);
+        //TODO Below is an example on how the calls work.
+        /*HttpRequestorManager.initialize(this);
 
         api_requestBuilder = new API_RequestBuilder();
-
-        api_requestBuilder.populateModel("ALL", this.data, new Callback() {
+        this.data = new CoursesModels();
+        api_requestBuilder.populateModel("CSC", this.data, new Callback() {
             @Override
             public void response(Object object) {
-                data  = (DepartmentsModel) object;
+
+                data  = (CoursesModels) object;
             }
 
             @Override
             public void error(NULLOBJ nullObj) {
 
             }
-        });
-
-
+        });*/
 
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
@@ -92,6 +92,8 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
     }
+
+
 
     @Override
     public void onBackPressed() {

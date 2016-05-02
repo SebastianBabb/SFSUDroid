@@ -42,30 +42,25 @@ public class HttpRequestorManager {
     }
 
     public void makeRESTRequest(String URL, String state, final Callback callback){
-
+        Log.i("VOLLEY", "Call to URL -> " + URL);
         final String flag = state;
+        Log.i("VOLLEY", "Flag set -> "+flag);
         JsonObjectRequest jsObjRequest = new JsonObjectRequest
                 (Request.Method.GET, URL, null, new Response.Listener<JSONObject>() {
 
                     @Override
                     public void onResponse(JSONObject response) {
-
+                        Log.i("VOLLEY", "Successful response.....");
                         if (flag == "courses") {
                             CoursesModels data = new Gson().fromJson(response.toString(), CoursesModels.class);
                             callback.response(data);
-                        }
-
-                        if(flag == "forums") {
+                        }else if(flag == "forums") {
                             ForumsModel data =  new Gson().fromJson(response.toString(), ForumsModel.class);
                             callback.response(data);
-                        }
-
-                        if(flag == "reviews") {
+                        }else if(flag == "reviews") {
                             ReviewsModel data = new Gson().fromJson(response.toString(), ReviewsModel.class);
                             callback.response(data);
-                        }
-
-                        if(flag == "departments") {
+                        }else if(flag == "departments") {
                             DepartmentsModel data = new Gson().fromJson(response.toString(), DepartmentsModel.class);
                             callback.response(data);
                         }
