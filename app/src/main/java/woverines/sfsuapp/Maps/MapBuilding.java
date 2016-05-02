@@ -1,5 +1,7 @@
 package woverines.sfsuapp.Maps;
 
+import com.google.android.gms.maps.model.LatLng;
+
 import java.util.List;
 
 /**
@@ -7,14 +9,13 @@ import java.util.List;
  */
 public class MapBuilding {
     private String name;
-    private List<MapNode> nodesList;
-    private double x, y;
+    private List<MapNode> nodeList;
+    private LatLng coords;
 
-    public MapBuilding(String name, List<MapNode> nodes, double x, double y) {
+    public MapBuilding(String name, List<MapNode> nodes, LatLng coords) {
         this.name = name;
-        this.nodesList = nodes;
-        this.x = x;
-        this.y = y;
+        this.nodeList = nodes;
+        this.coords = coords;
     }
 
     public String getName() {
@@ -22,14 +23,25 @@ public class MapBuilding {
     }
 
     public List<MapNode> getNodes() {
-        return nodesList;
+        return nodeList;
     }
 
-    public double getX() {
-        return x;
+    public LatLng getCoords() {
+        return coords;
     }
 
-    public double getY() {
-        return y;
+    public MapNode getNearestNode(LatLng coords) {
+        MapNode tempNode = new MapNode(-1,coords);
+        MapNode nearest = nodeList.get(0);
+
+        for(MapNode node : nodeList) {
+            float nearestDist = tempNode.distFrom(nearest);
+            float curDist = tempNode.distFrom(node);
+            if(curDist < nearestDist) {
+                nearest = node;
+            }
+        }
+
+        return nearest;
     }
 }
