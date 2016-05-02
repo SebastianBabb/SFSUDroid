@@ -62,7 +62,7 @@ public class ClassCatalogAdapter extends RecyclerView.Adapter<ClassCatalogAdapte
             courseMeetDays = (TextView) itemView.findViewById(R.id.course_meet_days);
             courseMeetTime = (TextView) itemView.findViewById(R.id.course_meet_time);
             courseMeetRoom = (TextView) itemView.findViewById(R.id.course_meet_room);
-            courseInstructor = (TextView) itemView.findViewById(R.id.course_instructor);
+            courseInstructor = (TextView) itemView.findViewById(R.id.dialog_course_instructor);
             itemView.setOnClickListener(this);
         }
 

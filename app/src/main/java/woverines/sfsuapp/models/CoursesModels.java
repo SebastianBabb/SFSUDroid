@@ -4,13 +4,11 @@ package woverines.sfsuapp.models;
 import java.util.List;
 
 public class CoursesModels {
-    List<Course> courses;
+    public List<Course> classes;
 
-    public class Course{
-        public int classNumber;
-        public String className;
-        public String classPereq;
-        public String classDate;
-        public String classMeetingDay;
+    public class Course {
+        public int course_number;
+        public String course_description;
+        public String course_name;
     }
 }

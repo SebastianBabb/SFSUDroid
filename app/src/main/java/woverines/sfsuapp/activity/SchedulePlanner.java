@@ -47,6 +47,7 @@ public class SchedulePlanner extends AppCompatActivity {
     TextView detailNumberTV;
     TextView detailInstructorTV;
     TextView detailDescriptionTV;
+    TextView detailMeetDaysTV;
     Button detailCancelB;
     Button detailAddEventB;
 
@@ -86,9 +87,10 @@ public class SchedulePlanner extends AppCompatActivity {
         //connecting TextViews to dialog
         detailNumberTV = (TextView) courseDetailDialog.findViewById(R.id.dialog_course_number);
         detailNameTV = (TextView) courseDetailDialog.findViewById(R.id.dialog_course_name);
-        detailInstructorTV = (TextView) courseDetailDialog.findViewById(R.id.dialog_meet_time);
+        detailInstructorTV = (TextView) courseDetailDialog.findViewById(R.id.dialog_course_instructor);
         detailTimeTV = (TextView) courseDetailDialog.findViewById(R.id.dialog_meet_time);
         detailDescriptionTV = (TextView) courseDetailDialog.findViewById(R.id.dialog_course_description);
+        detailMeetDaysTV = (TextView) courseDetailDialog.findViewById(R.id.dialog_course_meet_days);
         detailAlerts = (ViewGroup) courseDetailDialog.findViewById(R.id.listView);
         detailCancelB = (Button) courseDetailDialog.findViewById(R.id.dialog_cancel_button);
         detailAddEventB = (Button) courseDetailDialog.findViewById(R.id.dialog_add_event);
@@ -127,13 +129,6 @@ public class SchedulePlanner extends AppCompatActivity {
                 "Modern software applications. Object-oriented techniques: encapsulation, inheritance, and poly-morphism as mechanism for data design and problem solution. Software design, debugging, testing, and UI design. Software maintenance. Software development tools. Extra fee required. (Plus-minus letter grade only)"));
         }
 
-    private void generateDemoEvents()
-    {
-        eventArray = new ArrayList<Event>();
-        eventArray.add(new Event(0, 12.00, "Class Starts"));
-        eventArray.add(new Event(1, 5.00, "Assignment 3 Due"));
-
-    }
 
     public void generateClasses()
     {
@@ -178,16 +173,19 @@ public class SchedulePlanner extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
+                Course course = courseArrayList.get(position);
                 //setting up courseDetailsDialog
-                detailNumberTV.setText(courseArrayList.get(position).getDepartment() + " " + courseArrayList.get(position).getNumber() + "." + courseArrayList.get(position).getSection());
-                detailNameTV.setText(courseArrayList.get(position).getName());
-                detailInstructorTV.setText(courseArrayList.get(position).getInstructor());
-                detailTimeTV.setText(courseArrayList.get(position).getMeetTime());
-                detailDescriptionTV.setText(courseArrayList.get(position).getDescription());
+                detailNumberTV.setText(course.getDepartment() + " " + course.getNumber() + "." + course.getSection());
+                detailNameTV.setText(course.getName());
+                detailInstructorTV.setText(course.getInstructor());
+                detailTimeTV.setText(course.getMeetTime());
+                detailDescriptionTV.setText(course.getDescription());
+                detailMeetDaysTV.setText(course.getMeetDays());
+
 
                 detailAlerts.removeAllViews();
 
-                final int courseId = courseArrayList.get(position).getId();
+                final int courseId = course.getId();
                 List<Alerts> alerts = ALERTS_TABLE.getAlerts(getApplicationContext(), courseId, 0);
 
                 if (!alerts.isEmpty()) {
@@ -338,37 +336,46 @@ public class SchedulePlanner extends AppCompatActivity {
             //instead of creating a new course_list_item view, check if it exists,
             //if exits: reuse the view with new data - using .from(getContext()), context returned by super call
             //if does not exist: use inflater to create it (inflater is very taxing)
+            Course thisCourse = getItem(position);
             ScheduleViewHolder mainViewHolder = null;
             if (convertView == null) {
                 LayoutInflater inflater = LayoutInflater.from(getContext());
                 convertView = inflater.inflate(layout, parent, false);
                 ScheduleViewHolder viewHolder = new ScheduleViewHolder();
 
+
                 //linking widgets
                 viewHolder.number = (TextView) convertView.findViewById(R.id.course_number);
                 //                viewHolder.clock = (ImageView) convertView.findViewById(R.id.recipe_list_item_clock);
-                viewHolder.name = (TextView) convertView.findViewById(R.id.course_name);
-                viewHolder.instructor = (TextView) convertView.findViewById(R.id.course_instructor);
+                viewHolder.name = (TextView) convertView.findViewById(R.id.course_title);
+                viewHolder.instructor = (TextView) convertView.findViewById(R.id.dialog_course_instructor);
                 viewHolder.meetTime = (TextView) convertView.findViewById(R.id.course_meet_time);
+                viewHolder.meetDays = (TextView) convertView.findViewById(R.id.course_meet_days);
+                viewHolder.meetRoom = (TextView) convertView.findViewById(R.id.course_meet_room);
+
 
                 //setting info
-                viewHolder.name.setText(getItem(position).getName().toString());
-                viewHolder.number.setText(getItem(position).getNumber().toString());
-                viewHolder.instructor.setText(getItem(position).getInstructor().toString());
-                viewHolder.meetTime.setText(getItem(position).getMeetTime().toString());
+                viewHolder.name.setText(thisCourse.getName());
+                viewHolder.number.setText(thisCourse.getDepartment() + " " + thisCourse.getNumber() + "-" + thisCourse.getSection());
+                viewHolder.instructor.setText(thisCourse.getInstructor());
+                viewHolder.meetTime.setText(thisCourse.getMeetTime());
+                viewHolder.meetRoom.setText(thisCourse.getMeetRoom());
+                viewHolder.meetDays.setText(thisCourse.getMeetDays());
                     /*   add a reference of this object into convertView, so we convertView != null
                         we can retrieve the object and directly set the new data to the ScheduleViewHolder items
                          (recyle this object)
                      */
                 convertView.setTag(viewHolder);
             } else {  //converView != null --> retrieve viewHolder (using tag), assign it to externally declared ScheduleViewHolder (mainViewHolder)
-                Course thisCourse = getItem(position);
+
                 mainViewHolder = (ScheduleViewHolder) convertView.getTag();
                 //manually set the data of list view items here//
                 mainViewHolder.number.setText(thisCourse.getDepartment() + " " + thisCourse.getNumber() + "." +  thisCourse.getSection());
                 mainViewHolder.name.setText(thisCourse.getName());
                 mainViewHolder.instructor.setText(thisCourse.getInstructor());
                 mainViewHolder.meetTime.setText(thisCourse.getMeetTime());
+                mainViewHolder.meetRoom.setText(thisCourse.getMeetRoom());
+                mainViewHolder.meetDays.setText(thisCourse.getMeetDays());
             }
 
             return convertView;
@@ -390,6 +397,8 @@ public class SchedulePlanner extends AppCompatActivity {
         TextView name;
         TextView instructor;
         TextView meetTime;
+        TextView meetRoom;
+        TextView meetDays;
     }
 
 }
