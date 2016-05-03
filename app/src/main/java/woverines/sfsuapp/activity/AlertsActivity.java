@@ -41,15 +41,17 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
 import woverines.sfsuapp.R;
+import woverines.sfsuapp.database.ALERTS_TABLE;
+import woverines.sfsuapp.database.Alerts;
 
 public class AlertsActivity extends AppCompatActivity implements OnItemSelectedListener {
 
+    public static final String EXTRA_COURSE_ID = "course_id";
     public static final String EXTRA_ALERT = "alert";
     public static final int REQUEST_CODE_RINGTONE = 1;
 
@@ -72,6 +74,7 @@ public class AlertsActivity extends AppCompatActivity implements OnItemSelectedL
     private CheckedTextView vibrate;
     private CheckedTextView repeat;
 
+    private int courseId;
     private Alert alert;
 
     @Override
@@ -156,13 +159,19 @@ public class AlertsActivity extends AppCompatActivity implements OnItemSelectedL
     private void initialize() {
         Intent intent = getIntent();
         if (intent != null) {
+            courseId = intent.getIntExtra(EXTRA_COURSE_ID, -1);
             alert = intent.getParcelableExtra(EXTRA_ALERT);
+        }
+
+        if (courseId == -1) {
+            return;
         }
 
         if (alert == null) {
             alert = new Alert();
         }
 
+        text.setText(alert.alertText);
         date.setText(DATE_FORMAT.format(alert.time));
         time.setText(TIME_FORMAT.format(alert.time));
 
@@ -231,7 +240,14 @@ public class AlertsActivity extends AppCompatActivity implements OnItemSelectedL
 
         AlertHelper.createAlarm(this, alert);
 
+        if (alert.id > 0) {
+            AlertHelper.updateAlarmDatabase(this, courseId, alert);
+        } else {
+            alert.id = AlertHelper.createAlarmDatabase(this, courseId, alert);
+        }
+
         Intent intent = new Intent();
+        intent.putExtra(EXTRA_COURSE_ID, courseId);
         intent.putExtra(EXTRA_ALERT, alert);
 
         setResult(RESULT_OK, intent);
@@ -247,6 +263,8 @@ public class AlertsActivity extends AppCompatActivity implements OnItemSelectedL
                 public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
                     calendar.set(year, monthOfYear, dayOfMonth);
                     date.setText(DATE_FORMAT.format(calendar.getTime()));
+
+                    alert.time = calendar.getTimeInMillis();
                 }
             },
             calendar.get(Calendar.YEAR),
@@ -267,6 +285,8 @@ public class AlertsActivity extends AppCompatActivity implements OnItemSelectedL
                     calendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
                     calendar.set(Calendar.MINUTE, minute);
                     time.setText(TIME_FORMAT.format(calendar.getTime()));
+
+                    alert.time = calendar.getTimeInMillis();
                 }
             },
             calendar.get(Calendar.HOUR_OF_DAY),
@@ -310,6 +330,7 @@ public class AlertsActivity extends AppCompatActivity implements OnItemSelectedL
 
     public static class Alert implements Parcelable {
 
+        public long id;
         public String alertText;
         public long time;
         public int reminder; // Minutes
@@ -321,7 +342,18 @@ public class AlertsActivity extends AppCompatActivity implements OnItemSelectedL
             time = System.currentTimeMillis();
         }
 
+        public Alert(Alerts alert) {
+            id = alert.getAlertID();
+            alertText = alert.getText();
+            time = alert.getmTime();
+            reminder = alert.getmReminder();
+            sound = alert.getmSound() != null ? Uri.parse(alert.getmSound()) : null;
+            vibrate = alert.getmVibrate() > 0;
+            repeat = alert.getmReapeat() > 0;
+        }
+
         protected Alert(Parcel in) {
+            id = in.readLong();
             alertText = in.readString();
             time = in.readLong();
             reminder = in.readInt();
@@ -349,6 +381,7 @@ public class AlertsActivity extends AppCompatActivity implements OnItemSelectedL
 
         @Override
         public void writeToParcel(Parcel dest, int flags) {
+            dest.writeLong(id);
             dest.writeString(alertText);
             dest.writeLong(time);
             dest.writeInt(reminder);
@@ -368,9 +401,10 @@ public class AlertsActivity extends AppCompatActivity implements OnItemSelectedL
             String action = intent.getAction();
 
             if (action != null && action.equals("android.intent.action.BOOT_COMPLETED")) {
-                List<Alert> alerts = new ArrayList<>();
-                for (Alert alert : alerts) {
-                    AlertHelper.createAlarm(context, alert);
+                List<Alerts> alerts = ALERTS_TABLE.getAlerts(context, System.currentTimeMillis());
+
+                for (Alerts alert : alerts) {
+                    AlertHelper.createAlarm(context, new Alert(alert));
                 }
             } else {
                 Notification notification = intent.getParcelableExtra(EXTRA_NOTIFICATION);
@@ -410,6 +444,36 @@ public class AlertsActivity extends AppCompatActivity implements OnItemSelectedL
             } else {
                 manager.setRepeating(AlarmManager.RTC_WAKEUP, time, interval, alarmIntent);
             }
+        }
+
+        private static long createAlarmDatabase(Context context, int courseId, Alert alert) {
+            Alerts instance = new Alerts(
+                alert.id,
+                courseId,
+                alert.time,
+                alert.alertText,
+                alert.reminder,
+                alert.sound != null ? alert.sound.toString() : null,
+                alert.vibrate ? 1 : 0,
+                alert.repeat ? 1 : 0
+            );
+
+            return ALERTS_TABLE.createAlert(context, instance);
+        }
+
+        private static int updateAlarmDatabase(Context context, int courseId, Alert alert) {
+            Alerts instance = new Alerts(
+                alert.id,
+                courseId,
+                alert.time,
+                alert.alertText,
+                alert.reminder,
+                alert.sound != null ? alert.sound.toString() : null,
+                alert.vibrate ? 1 : 0,
+                alert.repeat ? 1 : 0
+            );
+
+            return ALERTS_TABLE.updateAlert(context, instance);
         }
 
         public static Notification createNotification(Context context, Alert alert) {
