@@ -3,6 +3,7 @@ package woverines.sfsuapp.fragment;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +14,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import woverines.sfsuapp.R;
@@ -60,12 +62,15 @@ public class ShuttleScheduleFragment extends Fragment implements OnMapReadyCallb
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
 
         FragmentManager manager = getChildFragmentManager();
-        SupportMapFragment mapFragment = (SupportMapFragment) manager.
+        SupportMapFragment shuttleFragment = (SupportMapFragment) manager.
                 findFragmentById(R.id.shuttleMapFragment);
-        if (mapFragment == null) {
-            mapFragment = SupportMapFragment.newInstance();
-            mapFragment.getMapAsync(this);
+
+        if (shuttleFragment == null) {
+            shuttleFragment = SupportMapFragment.newInstance();
         }
+
+        shuttleFragment.getMapAsync(this);
+
 
 
         return rootView;
@@ -75,9 +80,11 @@ public class ShuttleScheduleFragment extends Fragment implements OnMapReadyCallb
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
-        // Add a marker in Sydney and move the camera
-        LatLng sydney = new LatLng(-34, 151);
-        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+        //Log.d("Map Ready", "testing");
+
+        LatLngBounds campus = new LatLngBounds(new LatLng(37.72083239241096,-122.48518355190754),
+                new LatLng(37.72567087764266,-122.47505284845829));
+
+        mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(campus,0));
     }
 }
