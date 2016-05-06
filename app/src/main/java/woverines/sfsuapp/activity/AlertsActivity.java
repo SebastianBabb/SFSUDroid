@@ -213,6 +213,10 @@ public class AlertsActivity extends AppCompatActivity implements OnItemSelectedL
             }
         }
 
+        if (alert.id == 0) {
+            menu.getItem(1).setVisible(false);
+        }
+
         return true;
     }
 
@@ -226,6 +230,9 @@ public class AlertsActivity extends AppCompatActivity implements OnItemSelectedL
                 return true;
             case R.id.action_save:
                 onSave();
+                return true;
+            case R.id.action_delete:
+                onDelete();
                 return true;
         }
 
@@ -251,6 +258,14 @@ public class AlertsActivity extends AppCompatActivity implements OnItemSelectedL
         intent.putExtra(EXTRA_ALERT, alert);
 
         setResult(RESULT_OK, intent);
+        finish();
+    }
+
+    public void onDelete() {
+        if (alert.id > 0) {
+            AlertHelper.removeAlarmDatabase(this, alert.id);
+        }
+
         finish();
     }
 
@@ -476,6 +491,10 @@ public class AlertsActivity extends AppCompatActivity implements OnItemSelectedL
             );
 
             return ALERTS_TABLE.updateAlert(context, instance);
+        }
+
+        private static int removeAlarmDatabase(Context context, long alertId) {
+            return ALERTS_TABLE.removeAlert(context, alertId);
         }
 
         public static Notification createNotification(Context context, Alert alert) {
