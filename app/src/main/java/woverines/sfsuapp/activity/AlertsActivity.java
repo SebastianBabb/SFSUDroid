@@ -417,6 +417,8 @@ public class AlertsActivity extends AppCompatActivity implements OnItemSelectedL
                 NotificationManager manager =
                     (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
                 manager.notify(id, notification);
+
+                ALERTS_TABLE.checkRepeats(context);
             }
         }
     }
