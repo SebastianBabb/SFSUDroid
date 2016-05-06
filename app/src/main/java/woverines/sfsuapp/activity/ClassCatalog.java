@@ -15,17 +15,21 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
 import woverines.sfsuapp.R;
+import woverines.sfsuapp.api.API_RequestBuilder;
+import woverines.sfsuapp.api.Callback;
+import woverines.sfsuapp.api.HttpRequestorManager;
 import woverines.sfsuapp.database.Course;
+import woverines.sfsuapp.models.CoursesModels;
+import woverines.sfsuapp.models.DepartmentsModel;
+import woverines.sfsuapp.models.NULLOBJ;
 
 public class ClassCatalog extends AppCompatActivity implements ClassCatalogAdapter.CatalogClickListener {
-    private static Map<String, String> departmentMap;
-    private static List<String> departmentList;
+//    private static Map<String, String> departmentMap;
+    private List<String> departmentList;
 
     private List<Course> courseList;
     private ClassCatalogAdapter adapter;
@@ -39,6 +43,10 @@ public class ClassCatalog extends AppCompatActivity implements ClassCatalogAdapt
     private TextView detailTimeTV;
     private TextView detailDescriptionTV;
 
+    private API_RequestBuilder api_requestBuilder;
+    private DepartmentsModel departments;
+    private CoursesModels courses;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,15 +55,14 @@ public class ClassCatalog extends AppCompatActivity implements ClassCatalogAdapt
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        setDemoCourseList();
+//        setDemoCourseList();
         setDemoDepartmentMap();
+        courseList = new ArrayList<>();
         adapter = new ClassCatalogAdapter(this, courseList);
         courseListView = (RecyclerView) findViewById(R.id.catalog_course_list);
         courseListView.setLayoutManager(new LinearLayoutManager(this));
         courseListView.setAdapter(adapter);
-
-        departmentInput = (TextView) findViewById(R.id.department_input);
-        courseNumberInput = (TextView) findViewById(R.id.course_number_input);
+        departmentInput = (AutoCompleteTextView) findViewById(R.id.department_input);
 
         courseDetailDialog = new Dialog(this);
         courseDetailDialog.setContentView(R.layout.catalog_details_dialog);
@@ -85,8 +92,9 @@ public class ClassCatalog extends AppCompatActivity implements ClassCatalogAdapt
         });
 
         final AutoCompleteTextView departmentInput = (AutoCompleteTextView) findViewById(R.id.department_input);
-        departmentList = new ArrayList<>(departmentMap.keySet());
-        Collections.sort(departmentList);
+//        departmentList = new ArrayList<>(departmentMap.keySet());
+        setDepartmentList();
+//        Collections.sort(departmentList);
         ArrayAdapter<String> departmentAdapter = new ArrayAdapter<String>(this, R.layout.department_autocomplete_popup_item, departmentList);
         departmentInput.setAdapter(departmentAdapter);
         departmentInput.setOnFocusChangeListener(new View.OnFocusChangeListener() {
@@ -98,16 +106,44 @@ public class ClassCatalog extends AppCompatActivity implements ClassCatalogAdapt
             }
         });
 
+        HttpRequestorManager.initialize(this);
+        api_requestBuilder = new API_RequestBuilder();
+
         this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
     }
 
+    private void setCourseListFromCoursesModels(CoursesModels models, String department) {
+        courseList.clear();
+        for (CoursesModels.Course apiCourse : models.classes) {
+            Course course = new Course(0, department, apiCourse.course_number+"", "", apiCourse.course_description, "", "", "", "", "");
+            courseList.add(course);
+        }
+    }
+
     public void filterCourses(View view) {
-        String selectedDepartment = departmentMap.get(departmentInput.getText().toString());
-        if (selectedDepartment == null || selectedDepartment.isEmpty()) {
+        final String selectedDepartment = departmentInput.getText().toString();
+        if (selectedDepartment.isEmpty()) {
             return;
         }
-        String selectedCourseNumber = courseNumberInput.getText().toString();
+        if (!departmentList.contains(selectedDepartment)) {
+            Toast.makeText(this, "Not a valid department. Please check your selection.", Toast.LENGTH_LONG).show();
+        }
+//        String selectedCourseNumber = courseNumberInput.getText().toString();
 
+        this.courses = new CoursesModels();
+        api_requestBuilder.populateModel(selectedDepartment, this.courses, new Callback() {
+            @Override
+            public void response(Object object) {
+                courses  = (CoursesModels) object;
+                setCourseListFromCoursesModels((CoursesModels) object, selectedDepartment);
+                adapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void error(NULLOBJ nullObj) {
+
+            }
+        });
     }
 
     public void showCourseDetails(View view) {
@@ -135,11 +171,133 @@ public class ClassCatalog extends AppCompatActivity implements ClassCatalogAdapt
     }
 
     private void setDemoDepartmentMap() {
-        departmentMap = new HashMap<>();
-        departmentMap.put("Computer Science", "CSC");
-        departmentMap.put("Social Work", "SW");
-        departmentMap.put("Philosophy", "PHIL");
-        departmentMap.put("Information System", "ISYS");
+//        HttpRequestorManager.initialize(this);
+//        api_requestBuilder = new API_RequestBuilder();
+//        this.departments = new DepartmentsModel();
+//        api_requestBuilder.populateModel(null, this.departments, new Callback() {
+//            @Override
+//            public void response(Object object) {
+//                departments  = (DepartmentsModel) object;
+//            }
+//
+//            @Override
+//            public void error(NULLOBJ nullObj) {
+//
+//            }
+//        });
+
+    }
+
+    private void setDepartmentList() {
+        String[] departmentCodes  = new String[] {
+                "AA S",
+                "ACCT",
+                "ADM",
+                "AFRS",
+                "AIS",
+                "AMST",
+                "ANTH",
+                "ARAB",
+                "ART",
+                "ASTR",
+                "ATHL",
+                "A U",
+                "BECA",
+                "BIOL",
+                "BUS",
+                "CAD",
+                "C D",
+                "CFS",
+                "CHEM",
+                "CHIN",
+                "CINE",
+                "C J",
+                "CLAR",
+                "CLAS",
+                "CLS",
+                "COMM",
+                "COUN",
+                "CSC",
+                "CST",
+                "C W",
+                "CWL",
+                "DAI",
+                "DANC",
+                "DFM",
+                "DS",
+                "ECON",
+                "EDAD",
+                "EDDL",
+                "EDUC",
+                "E ED",
+                "ENGR",
+                "ENVS",
+                "ERTH",
+                "ETHS",
+                "FIN",
+                "F L",
+                "FR",
+                "GEOG",
+                "GER",
+                "GPS",
+                "GRE",
+                "GRN",
+                "HEBR",
+                "H ED",
+                "HH",
+                "HIST",
+                "HSS",
+                "HTM",
+                "HUM",
+                "IBUS",
+                "ID",
+                "I R",
+                "ISED",
+                "ISYS",
+                "ITAL",
+                "ITEC",
+                "JAPN",
+                "JOUR",
+                "JS",
+                "KIN",
+                "LABR",
+                "LATN",
+                "LCA",
+                "LS",
+                "LTNS",
+                "MATH",
+                "MEIS",
+                "MGMT",
+                "MGS",
+                "MKTG",
+                "M S",
+                "MSCI",
+                "MUS",
+                "NURS",
+                "P A",
+                "PHIL",
+                "PHYS",
+                "PLSI",
+                "PRSN",
+                "PSY",
+                "PT",
+                "RELS",
+                "RPT",
+                "RRS",
+                "RUSS",
+                "SCI",
+                "S ED",
+                "SOC",
+                "SPAN",
+                "SPED",
+                "S W",
+                "SXS",
+                "TH A",
+                "TPW",
+                "USP",
+                "WGS"
+        };
+        departmentList = Arrays.asList(departmentCodes);
     }
 
     @Override
