@@ -6,6 +6,8 @@ import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewManager;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 
@@ -49,11 +51,13 @@ public class ShuttleScheduleFragment extends Fragment{
         final TextView textView = (TextView) rootView.findViewById(R.id.section_label);
         textView.setText(args.getString(ARG_TEXT));
 
-        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
 
-        FragmentManager manager = getChildFragmentManager();
+        //ImageView shuttleView = (ImageView)getView().findViewById(R.id.ShuttleMapFrame);
+        //shuttleView.setOnTouchListener(this);
 
         return rootView;
     }
+
+
 
 }
