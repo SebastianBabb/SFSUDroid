@@ -3,6 +3,7 @@ package woverines.sfsuapp.activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -22,6 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Random;
+import java.util.Set;
 
 import woverines.sfsuapp.R;
 import woverines.sfsuapp.database.ALERTS_TABLE;
@@ -32,6 +34,9 @@ import woverines.sfsuapp.database.Event;
 public class SchedulePlanner extends AppCompatActivity {
 
     private static final int REQUEST_CODE_ALERTS = 1;
+    private static final String PREF_COURSES = "PrefCourses";
+    private static final String COURSES_IDS = "MyCourses";
+    SharedPreferences sharedPrefs;
 
     private static final SimpleDateFormat DATE_FORMAT =
         new SimpleDateFormat("MMM d, yyyy h:mm a", Locale.getDefault());
@@ -56,8 +61,6 @@ public class SchedulePlanner extends AppCompatActivity {
 //    private
     public ArrayList<Event> eventArray;
 
-    //for testing
-    Button genRadomClassesB;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,13 +72,6 @@ public class SchedulePlanner extends AppCompatActivity {
         //create array of myCourses
         courseArrayList = new ArrayList<>();
 
-        genRadomClassesB = (Button) findViewById(R.id.gen_random_classes);
-        genRadomClassesB.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                generateClasses();
-            }
-        });
 
         courseListView = (ListView) findViewById(R.id.course_list_view);
 
@@ -130,24 +126,19 @@ public class SchedulePlanner extends AppCompatActivity {
         }
 
 
-    public void generateClasses()
-    {
-        scheduleAdapter.clear();
-
-        Course tempCourse = new Course(1, "668", "Advanced OOP", "Levine", "11:00 - 12:15", "somethign something...");
-        courseArrayList.add(tempCourse);
-
-        Random rnd = new Random();
-
-        for(int i = 0; i < rnd.nextInt(15); i++)
-        {
-            tempCourse = new Course();
-            tempCourse.genRandomCourse2();
-            courseArrayList.add(tempCourse);
-        }
-
-        scheduleAdapter.notifyDataSetChanged();
+    private void addCourseToPlanner(String id){
+//        sharedPrefs = this.getSharedPreferences(PREF_COURSES, Context.MODE_PRIVATE);
+//        SharedPreferences.Editor editor = pref.edit();
+//
+//        editor.putStringSet(SOME_KEY, someStringSet);
+//        editor.commit();
     }
+
+//    private Set<String> getCoursesIDs{
+//
+//
+//        return ;
+//    }
 
 
     public void displaySchedule() {
