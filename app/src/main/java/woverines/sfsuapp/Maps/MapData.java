@@ -1,6 +1,7 @@
 package woverines.sfsuapp.Maps;
 
 import android.content.res.Resources;
+import android.util.Log;
 
 import com.google.android.gms.appinvite.AppInviteInvitation;
 import com.google.android.gms.maps.model.LatLng;
@@ -26,7 +27,6 @@ public class MapData {
     private Map<String, MapBuilding> buildingList = new HashMap<>();;
     private Map<Integer,MapNode> nodeList;
 
-    // dummy
     public void initMap(Resources resources) {
         nodeList = new HashMap<>();
         loadMapFromFile(resources);
@@ -107,12 +107,14 @@ public class MapData {
         MapNode tempNode = new MapNode(-1,coords);
         MapNode[] nodes = nodeList.values().toArray(new MapNode[0]);
         MapNode nearest = nodes[0];
-
+        Log.d("New Nearest", nearest.getId() + ":" + tempNode.distFrom(nearest));
+        Log.d("From 27", "27:"+tempNode.distFrom(nodeList.get(27)));
         for(MapNode node : nodes) {
             float nearestDist = tempNode.distFrom(nearest);
             float curDist = tempNode.distFrom(node);
             if(curDist < nearestDist) {
                 nearest = node;
+                Log.d("New Nearest", nearest.getId() + ":" + curDist);
             }
         }
 

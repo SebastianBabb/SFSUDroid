@@ -2,6 +2,7 @@ package woverines.sfsuapp.Maps;
 
 import android.location.Location;
 
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.model.LatLng;
 
 import java.util.ArrayList;
