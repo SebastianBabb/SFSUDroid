@@ -80,14 +80,14 @@ public class COURSE_TABLE {
         SQLiteDatabase database = new DBHandler(context).getWritableDatabase();
 
         ContentValues values = new ContentValues();
-        values.put(COLUMN_NAME, course.getId());
+        values.put(COLUMN_NAME, course.getName());
         values.put(COLUMN_NUMBER, course.getNumber());
         values.put(COLUMN_SECTION, course.getSection());
         values.put(COLUMN_DEPARTMENT, course.getDepartment());
         values.put(COLUMN_INSTRUCTOR, course.getInstructor());
         values.put(COLUMN_MEET_TIME, course.getMeetTime());
         values.put(COLUMN_MEET_DAYS, course.getMeetDays());
-        values.put(COLUMN_MEET_ROOM, course.getMeetDays());
+        values.put(COLUMN_MEET_ROOM, course.getMeetRoom());
         values.put(COLUMN_DESCRIPTION, course.getDescription());
 
         id = database.insert(TABLE_COURSE, null, values);
@@ -116,8 +116,6 @@ public class COURSE_TABLE {
                 COLUMN_ID + " DESC"
         );
 
-
-
         while (cursor.moveToNext()) {
             Course course = cursorToCourse(cursor);
             courses.add(course);
@@ -127,6 +125,12 @@ public class COURSE_TABLE {
         database.close();
 
         return courses;
+    }
+
+    public static void resetTable(Context context){
+        SQLiteDatabase database = new DBHandler(context).getWritableDatabase();
+
+        database.execSQL("DELETE FROM "  + TABLE_COURSE);
     }
 
 
@@ -139,14 +143,14 @@ public class COURSE_TABLE {
     private static Course cursorToCourse(Cursor cursor) {
         return new Course(
             cursor.getInt(INDEX_ID),
-            cursor.getString(INDEX_NAME),
+            cursor.getString(INDEX_DEPARTMENT),
             cursor.getString(INDEX_NUMBER),
             cursor.getString(INDEX_SECTION),
-            cursor.getString(INDEX_DEPARTMENT),
-            cursor.getString(INDEX_INSTRUCTOR),
-            cursor.getString(INDEX_MEET_TIME),
+            cursor.getString(INDEX_NAME),
             cursor.getString(INDEX_MEET_DAYS),
+            cursor.getString(INDEX_MEET_TIME),
             cursor.getString(INDEX_MEET_ROOM),
+            cursor.getString(INDEX_INSTRUCTOR),
             cursor.getString(INDEX_DESCRIPTION)
             );
     }

@@ -99,14 +99,26 @@ public class SchedulePlanner extends AppCompatActivity {
         });
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        Button resetDB = (Button) findViewById(R.id.reset_db_button);
+
+        resetDB.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                COURSE_TABLE.resetTable(getApplicationContext());
+
+                scheduleAdapter.notifyDataSetChanged();
+            }
+        });
+
 //        add_class_ib = (Button) findViewById(R.id.)
 
+        Course test1 = new Course(2372, "CSC", "413", "02", "Software Development", "M, W, F", "12:10PM - 1:00PM", "Thornton Hall 329", "Marc Sosnick", "Prerequisites: CSC 340 and CSC 412 with grades of C or better. \n" + "Modern software applications. Object-oriented techniques: encapsulation, inheritance, and poly-morphism as mechanism for data design and problem solution. Software design, debugging, testing, and UI design. Software maintenance. Software development tools. Extra fee required. (Plus-minus letter grade only)");
+        Course test2 = new Course(2378, "CSC", "667", "01", "Internet Application Design and Development", "M", "7:00PM - 9:45PM", "Thornton Hall 210", "John Roberts", "Prerequisite: CSC 413 with grade of C or better or consent of instructor.\n" +  "Fundamental technologies on which WWW is based. Extra fee required.\n" +
+                                         "(CSC 667/CSC 867 is a paired course offering. Students who complete the course at one level may not repeat the course at the other level.)");
 
-        addCourseToPlanner(2361, "CSC", "256", "03", "Machine Structure", "Th", "4:10PM - 6:55PM", "Science Building 101", "Tsun-Yuk Hsu", "Prerequisite: CSC 230 or CSC 330 with grade of C or better. Digital logic circuits; data representation; assembly language programming; subroutine linkage; machine language encoding; interrupt/exception handling; memory system concepts; CPU organization and performance.");
-        addCourseToPlanner(2372, "CSC", "413", "02", "Software Development", "M, W, F", "12:10PM - 1:00PM", "Thornton Hall 329", "Marc Sosnick", "Prerequisites: CSC 340 and CSC 412 with grades of C or better. \n" + "Modern software applications. Object-oriented techniques: encapsulation, inheritance, and poly-morphism as mechanism for data design and problem solution. Software design, debugging, testing, and UI design. Software maintenance. Software development tools. Extra fee required. (Plus-minus letter grade only)");
-        addCourseToPlanner(2378, "CSC", "667", "01", "Internet Application Design and Development", "M", "7:00PM - 9:45PM", "Thornton Hall 210", "John Roberts", "Prerequisite: CSC 413 with grade of C or better or consent of instructor.\n" +
-                            "Fundamental technologies on which WWW is based. Extra fee required.\n" +
-                            "(CSC 667/CSC 867 is a paired course offering. Students who complete the course at one level may not repeat the course at the other level.)");
+        addCourseToPlanner(test1);
+        addCourseToPlanner(test2);
+
 
         getCourses();
         displaySchedule();
@@ -128,7 +140,7 @@ public class SchedulePlanner extends AppCompatActivity {
 
 
 
-    /**Retrieve all* courses from database
+    /**Retrieve all* courses from database (THESE ARE 'MY SCHEDULE' courses only!)
      * currently "1" is being set in as a selectionArgs value
      *  this can be anything we want if we need to filter classes to show
      *
@@ -137,7 +149,9 @@ public class SchedulePlanner extends AppCompatActivity {
         //we can add filtering for courses for today... ect here
 
         courseArrayList = COURSE_TABLE.getCourses(this, "1");
-      }
+//        courseArrayList.add(new Course(2361, "TEST_TEST", "256", "03", "Machine Structure", "Th", "4:10PM - 6:55PM", "Science Building 101", "Tsun-Yuk Hsu", "Prerequisite: CSC 230 or CSC 330 with grade of C or better. Digital logic circuits; data representation; assembly language programming; subroutine linkage; machine language encoding; interrupt/exception handling; memory system concepts; CPU organization and performance."));
+
+    }
 
 
     /**Add a course to COURSE_TABLE DB
@@ -368,7 +382,6 @@ public class SchedulePlanner extends AppCompatActivity {
 
                 //linking widgets
                 viewHolder.number = (TextView) convertView.findViewById(R.id.course_number);
-                //                viewHolder.clock = (ImageView) convertView.findViewById(R.id.recipe_list_item_clock);
                 viewHolder.name = (TextView) convertView.findViewById(R.id.course_title);
                 viewHolder.instructor = (TextView) convertView.findViewById(R.id.dialog_course_instructor);
                 viewHolder.meetTime = (TextView) convertView.findViewById(R.id.course_meet_time);
