@@ -218,8 +218,6 @@ public class CampusMapFragment extends Fragment implements OnMapReadyCallback, O
     }
 
     public Polyline drawPath(List<MapNode> path) {
-        lastKnownLocation = startLocation.getPosition();
-
         gMap.clear();
 
         PolylineOptions pathOptions = new PolylineOptions();
@@ -243,6 +241,7 @@ public class CampusMapFragment extends Fragment implements OnMapReadyCallback, O
                 buildingInit = true;
             } else {
 //            updateLocation();
+                lastKnownLocation = startLocation.getPosition();
 
                 LatLng currentCoords = lastKnownLocation;
                 if (position != 0) {
