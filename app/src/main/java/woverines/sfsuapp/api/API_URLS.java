@@ -6,4 +6,5 @@ public class API_URLS {
     public static String forums_URL = "/forums/class?title=";
     public static String courses_URL = "/classes?department=";
     public static String departments_URL = "/departments";
+    public static String professor_URL = "/professors?department=";
 }

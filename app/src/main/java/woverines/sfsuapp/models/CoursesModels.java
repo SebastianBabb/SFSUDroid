@@ -10,10 +10,9 @@ public class CoursesModels {
         public int course_id;
         public String course_number;
         public String course_section;
-        public String course_title;
+        public String course_name;
         public String course_department;
         public String course_description;
-        public String course_time;
         public String course_meetTime;
         public String course_meetDays;
         public String course_instructor;

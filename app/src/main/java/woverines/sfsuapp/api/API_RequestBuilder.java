@@ -14,6 +14,7 @@ import woverines.sfsuapp.models.CoursesModels;
 import woverines.sfsuapp.models.DepartmentsModel;
 import woverines.sfsuapp.models.ForumsModel;
 import woverines.sfsuapp.models.NULLOBJ;
+import woverines.sfsuapp.models.Professors;
 import woverines.sfsuapp.models.ReviewsModel;
 
 public class API_RequestBuilder {
@@ -39,6 +40,9 @@ public class API_RequestBuilder {
         } else if(model instanceof DepartmentsModel){
             URL = API_URLS.base_URL + API_URLS.departments_URL;
             flag = "departments";
+        } else if(model instanceof Professors){
+            URL = API_URLS.base_URL + API_URLS.professor_URL + paramAPI;
+            flag = "professors";
         }
        HttpRequestorManager.getInstance().makeRESTRequest(URL, flag, new Callback() {
            @Override
