@@ -9,14 +9,12 @@ public class CoursesModels {
     public class Course {
         public int course_id;
         public String course_number;
-        public String course_section;
+        public String section_number;
         public String course_name;
-        public String course_department;
+        public String course_subject;
         public String course_description;
-        public String course_meetTime;
-        public String course_meetDays;
-        public String course_instructor;
-        public String course_meetRoom;
-
+        public String course_time;
+        public String course_meeting_day;
+        public String course_teacher_name;
     }
 }

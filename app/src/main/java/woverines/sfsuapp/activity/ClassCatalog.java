@@ -119,7 +119,17 @@ public class ClassCatalog extends AppCompatActivity implements ClassCatalogAdapt
     private void setCourseListFromCoursesModels(CoursesModels models, String department) {
         courseList.clear();
         for (CoursesModels.Course apiCourse : models.classes) {
-            Course course = new Course(0, department, apiCourse.course_number+"", "", apiCourse.course_description, "", "", "", "", "");
+            int firstSpaceIndex = apiCourse.course_time.indexOf(' ');
+            String courseDays = "", courseTime;
+            if (firstSpaceIndex > 0) {
+                courseDays = apiCourse.course_time.substring(0, firstSpaceIndex);
+                courseTime = apiCourse.course_time.substring(firstSpaceIndex+1);
+            } else {
+                courseTime = apiCourse.course_time;
+            }
+
+            Course course = new Course(0, department, apiCourse.course_number, apiCourse.section_number,
+                    apiCourse.course_name, courseDays, courseTime, "", apiCourse.course_teacher_name, apiCourse.course_description);
             courseList.add(course);
         }
     }

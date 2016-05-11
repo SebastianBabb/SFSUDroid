@@ -34,12 +34,16 @@ public class ClassCatalogAdapter extends RecyclerView.Adapter<ClassCatalogAdapte
     @Override
     public void onBindViewHolder(CourseViewHolder holder, int position) {
         Course course = courseList.get(position);
-        holder.courseNumber.setText(course.getDepartment() + " " + course.getNumber());
+        String courseNumber = course.getDepartment() + " " + course.getNumber();
+        if (course.getSection() != null && !course.getSection().isEmpty()) {
+            courseNumber += "-" + course.getSection();
+        }
+        holder.courseNumber.setText(courseNumber);
         holder.courseTitle.setText(course.getName());
-//        holder.courseMeetDays.setText(course.getMeetDays());
-//        holder.courseMeetTime.setText(course.getMeetTime());
+        holder.courseMeetDays.setText(course.getMeetDays());
+        holder.courseMeetTime.setText(course.getMeetTime());
 //        holder.courseMeetRoom.setText(course.getMeetRoom());
-//        holder.courseInstructor.setText(course.getInstructor());
+        holder.courseInstructor.setText(course.getInstructor());
     }
 
     @Override
