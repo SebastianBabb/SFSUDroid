@@ -29,7 +29,6 @@
         android:id="@+id/imageView4"
         android:layout_below="@+id/textView4"
         android:layout_centerHorizontal="true"
-        android:src="@drawable/twitter2"
-        android:layout_alignParentBottom="true" />
+        android:src="@drawable/sflogo" />
 
 </RelativeLayout>

@@ -8,10 +8,15 @@ public class CoursesModels {
 
     public class Course {
         public int course_id;
-        public int course_number;
-        public String course_description;
+        public String course_number;
+        public String course_section;
         public String course_name;
-        public String course_time;
-        //TODO ADD more stuff.
+        public String course_department;
+        public String course_description;
+        public String course_meetTime;
+        public String course_meetDays;
+        public String course_instructor;
+        public String course_meetRoom;
+
     }
 }

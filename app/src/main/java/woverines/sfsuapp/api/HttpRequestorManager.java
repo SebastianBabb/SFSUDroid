@@ -1,5 +1,6 @@
 package woverines.sfsuapp.api;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.util.Log;
 
@@ -15,6 +16,7 @@ import woverines.sfsuapp.models.CoursesModels;
 import woverines.sfsuapp.models.DepartmentsModel;
 import woverines.sfsuapp.models.ForumsModel;
 import woverines.sfsuapp.models.NULLOBJ;
+import woverines.sfsuapp.models.Professors;
 import woverines.sfsuapp.models.ReviewsModel;
 
 
@@ -62,6 +64,9 @@ public class HttpRequestorManager {
                             callback.response(data);
                         }else if(flag == "departments") {
                             DepartmentsModel data = new Gson().fromJson(response.toString(), DepartmentsModel.class);
+                            callback.response(data);
+                        } else if(flag == "professors"){
+                            Professors data = new Gson().fromJson(response.toString(), Professors.class);
                             callback.response(data);
                         }
                     }
