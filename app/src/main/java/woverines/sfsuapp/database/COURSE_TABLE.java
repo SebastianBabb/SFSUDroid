@@ -74,7 +74,7 @@ public class COURSE_TABLE {
      * @param course contains Course values
      * @return id
      */
-    public static long createCourse(Context context, Course course) {
+    public static long addCourse(Context context, Course course) {
         long id;
 
         SQLiteDatabase database = new DBHandler(context).getWritableDatabase();
@@ -98,16 +98,16 @@ public class COURSE_TABLE {
     }
 
 
-    public static List<Course> getCourses(Context context, String user) {
+    public static ArrayList<Course> getCourses(Context context, String user) {
 
-        List<Course> courses = new ArrayList<>();
+        ArrayList<Course> courses = new ArrayList<>();
 
         SQLiteDatabase database = new DBHandler(context).getWritableDatabase();
 
         Cursor cursor = database.query(
                 TABLE_COURSE,
                 PROJECTION,
-                COLUMN_ID + " = ?",
+                COLUMN_ID + " >= ?",
                 new String[]{
                         String.valueOf(user)
                 },

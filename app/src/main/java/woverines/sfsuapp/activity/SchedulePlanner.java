@@ -22,12 +22,11 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import java.util.Random;
-import java.util.Set;
 
 import woverines.sfsuapp.R;
 import woverines.sfsuapp.database.ALERTS_TABLE;
 import woverines.sfsuapp.database.Alerts;
+import woverines.sfsuapp.database.COURSE_TABLE;
 import woverines.sfsuapp.database.Course;
 import woverines.sfsuapp.database.Event;
 
@@ -102,8 +101,17 @@ public class SchedulePlanner extends AppCompatActivity {
 
 //        add_class_ib = (Button) findViewById(R.id.)
 
-        setDemoCourseList();
+
+        addCourseToPlanner(2361, "CSC", "256", "03", "Machine Structure", "Th", "4:10PM - 6:55PM", "Science Building 101", "Tsun-Yuk Hsu", "Prerequisite: CSC 230 or CSC 330 with grade of C or better. Digital logic circuits; data representation; assembly language programming; subroutine linkage; machine language encoding; interrupt/exception handling; memory system concepts; CPU organization and performance.");
+        addCourseToPlanner(2372, "CSC", "413", "02", "Software Development", "M, W, F", "12:10PM - 1:00PM", "Thornton Hall 329", "Marc Sosnick", "Prerequisites: CSC 340 and CSC 412 with grades of C or better. \n" + "Modern software applications. Object-oriented techniques: encapsulation, inheritance, and poly-morphism as mechanism for data design and problem solution. Software design, debugging, testing, and UI design. Software maintenance. Software development tools. Extra fee required. (Plus-minus letter grade only)");
+        addCourseToPlanner(2378, "CSC", "667", "01", "Internet Application Design and Development", "M", "7:00PM - 9:45PM", "Thornton Hall 210", "John Roberts", "Prerequisite: CSC 413 with grade of C or better or consent of instructor.\n" +
+                            "Fundamental technologies on which WWW is based. Extra fee required.\n" +
+                            "(CSC 667/CSC 867 is a paired course offering. Students who complete the course at one level may not repeat the course at the other level.)");
+
+        getCourses();
         displaySchedule();
+
+
      }
 
     @Override
@@ -117,28 +125,51 @@ public class SchedulePlanner extends AppCompatActivity {
         super.onActivityResult(resultCode, resultCode, data);
     }
 
-    private void setDemoCourseList() {
-        courseArrayList = new ArrayList<>();
-        courseArrayList.add(new Course(2365, "CSC", "668", "01", "Advanced Object Oriented Programming", "Tu, Th", "11:00AM - 12:10PM", "Thornton Hall 310", "Barry Levine", "Students will learn advanced object-oriented programming techniques through group-work"));
-        courseArrayList.add(new Course(2361, "CSC", "256", "03", "Machine Structure", "Th", "4:10PM - 6:55PM", "Science Building 101", "Tsun-Yuk Hsu", "Prerequisite: CSC 230 or CSC 330 with grade of C or better. Digital logic circuits; data representation; assembly language programming; subroutine linkage; machine language encoding; interrupt/exception handling; memory system concepts; CPU organization and performance."));
-        courseArrayList.add(new Course(2372, "CSC", "413", "02", "Software Development", "M, W, F", "12:10PM - 1:00PM", "Thornton Hall 329", "Marc Sosnick", "Prerequisites: CSC 340 and CSC 412 with grades of C or better. \n" +
-                "Modern software applications. Object-oriented techniques: encapsulation, inheritance, and poly-morphism as mechanism for data design and problem solution. Software design, debugging, testing, and UI design. Software maintenance. Software development tools. Extra fee required. (Plus-minus letter grade only)"));
-        }
 
 
-    private void addCourseToPlanner(String id){
-//        sharedPrefs = this.getSharedPreferences(PREF_COURSES, Context.MODE_PRIVATE);
-//        SharedPreferences.Editor editor = pref.edit();
-//
-//        editor.putStringSet(SOME_KEY, someStringSet);
-//        editor.commit();
+
+    /**Retrieve all* courses from database
+     * currently "1" is being set in as a selectionArgs value
+     *  this can be anything we want if we need to filter classes to show
+     *
+     */
+    private void getCourses() {
+        //we can add filtering for courses for today... ect here
+
+        courseArrayList = COURSE_TABLE.getCourses(this, "1");
+      }
+
+
+    /**Add a course to COURSE_TABLE DB
+     *   pass in params
+     *  spearatly and perform any parsing before creating a Course
+     *  and passing it to COURSE_TABLE.addCourse
+     * @param id
+     * @param department
+     * @param number
+     * @param section
+     * @param name
+     * @param meetDays
+     * @param meetTime
+     * @param meetRoom
+     * @param description
+     * @return db table id
+     */
+    private long addCourseToPlanner(int id, String department, String number, String section, String name, String meetDays, String meetTime, String meetRoom, String instructor, String description){
+
+        Course course = new Course(id, department, number, section, name, meetDays, meetTime, meetRoom, instructor, description);
+
+        return COURSE_TABLE.addCourse(this, course);
     }
 
-//    private Set<String> getCoursesIDs{
-//
-//
-//        return ;
-//    }
+    /**add a course by sending in a Course
+     *
+     * @param course
+     * @return db table id
+     */
+    private long addCourseToPlanner(Course course){
+        return COURSE_TABLE.addCourse(this, course);
+    }
 
 
     public void displaySchedule() {
