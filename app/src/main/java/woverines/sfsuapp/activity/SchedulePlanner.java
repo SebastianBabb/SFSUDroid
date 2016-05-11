@@ -25,7 +25,7 @@ import java.util.Locale;
 
 import woverines.sfsuapp.R;
 import woverines.sfsuapp.database.ALERTS_TABLE;
-import woverines.sfsuapp.database.Alerts;
+import woverines.sfsuapp.database.Alert;
 import woverines.sfsuapp.database.COURSE_TABLE;
 import woverines.sfsuapp.database.Course;
 import woverines.sfsuapp.database.Event;
@@ -222,12 +222,9 @@ public class SchedulePlanner extends AppCompatActivity {
                 detailAlerts.removeAllViews();
 
                 final int courseId = course.getId();
-                List<Alerts> alerts = ALERTS_TABLE.getAlerts(getApplicationContext(), courseId, 0);
-
-                if (!alerts.isEmpty()) {
-                    for (Alerts alert : alerts) {
-                        insertAlert(alert, -1);
-                    }
+                List<Alert> alerts = ALERTS_TABLE.getAlerts(getApplicationContext(), courseId, 0);
+                for (Alert alert : alerts) {
+                    insertAlert(alert, -1);
                 }
 
                 //add go to addEven activity
@@ -252,53 +249,35 @@ public class SchedulePlanner extends AppCompatActivity {
         });
     }
 
-    public void goToAlerts(int courseId, Alerts alert)
-    {
-        AlertsActivity.Alert instance = null;
-        if (alert != null) {
-            instance = new AlertsActivity.Alert(alert);
-        }
-
+    public void goToAlerts(int courseId, Alert alert) {
         Intent goToAlertsIntent = new Intent(this, AlertsActivity.class);
         goToAlertsIntent.putExtra(AlertsActivity.EXTRA_COURSE_ID, courseId);
-        goToAlertsIntent.putExtra(AlertsActivity.EXTRA_ALERT, instance);
+        goToAlertsIntent.putExtra(AlertsActivity.EXTRA_ALERT, alert);
 
         startActivityForResult(goToAlertsIntent, REQUEST_CODE_ALERTS);
     }
 
     public void handleAlert(int resultCode, Intent data) {
         if (resultCode == RESULT_OK) {
-            int courseId = data.getIntExtra(AlertsActivity.EXTRA_COURSE_ID, 0);
-            AlertsActivity.Alert alert = data.getParcelableExtra(AlertsActivity.EXTRA_ALERT);
+            Alert alert = data.getParcelableExtra(AlertsActivity.EXTRA_ALERT);
 
             if (alert != null) {
-                Alerts instance = new Alerts(
-                    alert.id,
-                    courseId,
-                    alert.time,
-                    alert.alertText,
-                    alert.reminder,
-                    alert.sound != null ? alert.sound.toString() : null,
-                    alert.vibrate ? 1 : 0,
-                    alert.repeat ? 1 : 0
-                );
-
-                insertAlert(instance, 0);
+                insertAlert(alert, 0);
             }
         }
     }
 
-    private void insertAlert(final Alerts alert, int position) {
+    private void insertAlert(final Alert alert, int position) {
         LayoutInflater inflater = LayoutInflater.from(this);
         View view = inflater.inflate(R.layout.alerts_list_item, detailAlerts, false);
 
         TextView text = (TextView) view.findViewById(R.id.text);
-        text.setText(alert.getText());
+        text.setText(alert.alertText);
 
         TextView time = (TextView) view.findViewById(R.id.time);
-        time.setText(DATE_FORMAT.format(alert.getmTime()));
+        time.setText(DATE_FORMAT.format(alert.time));
 
-        if (alert.getmTime() < System.currentTimeMillis()) {
+        if (alert.time < System.currentTimeMillis()) {
             int color = getResources().getColor(android.R.color.darker_gray);
 
             ImageView icon = (ImageView) view.findViewById(R.id.icon);
@@ -311,7 +290,7 @@ public class SchedulePlanner extends AppCompatActivity {
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                goToAlerts(alert.getCourseID(), alert);
+                goToAlerts(alert.courseId, alert);
             }
         });
 
