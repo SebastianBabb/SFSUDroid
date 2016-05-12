@@ -28,10 +28,8 @@
         android:layout_height="wrap_content"
         android:id="@+id/course_list_view"
         android:divider="@android:drawable/divider_horizontal_textfield"
-        android:layout_below="@+id/textView2"
         android:layout_alignParentStart="true"
-        android:layout_marginTop="42dp"
-        android:layout_above="@+id/button" />
+        android:layout_below="@+id/add_course_ib" />
 
     <ImageButton
         android:layout_width="wrap_content"
