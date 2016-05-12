@@ -112,12 +112,12 @@ public class SchedulePlanner extends AppCompatActivity {
 
 //        add_class_ib = (Button) findViewById(R.id.)
 
-        Course test1 = new Course(2372, "CSC", "413", "02", "Software Development", "M, W, F", "12:10PM - 1:00PM", "Thornton Hall 329", "Marc Sosnick", "Prerequisites: CSC 340 and CSC 412 with grades of C or better. \n" + "Modern software applications. Object-oriented techniques: encapsulation, inheritance, and poly-morphism as mechanism for data design and problem solution. Software design, debugging, testing, and UI design. Software maintenance. Software development tools. Extra fee required. (Plus-minus letter grade only)");
-        Course test2 = new Course(2378, "CSC", "667", "01", "Internet Application Design and Development", "M", "7:00PM - 9:45PM", "Thornton Hall 210", "John Roberts", "Prerequisite: CSC 413 with grade of C or better or consent of instructor.\n" +  "Fundamental technologies on which WWW is based. Extra fee required.\n" +
-                                         "(CSC 667/CSC 867 is a paired course offering. Students who complete the course at one level may not repeat the course at the other level.)");
-
-        addCourseToPlanner(test1);
-        addCourseToPlanner(test2);
+//        Course test1 = new Course(2372, "CSC", "413", "02", "Software Development", "M, W, F", "12:10PM - 1:00PM", "Thornton Hall 329", "Marc Sosnick", "Prerequisites: CSC 340 and CSC 412 with grades of C or better. \n" + "Modern software applications. Object-oriented techniques: encapsulation, inheritance, and poly-morphism as mechanism for data design and problem solution. Software design, debugging, testing, and UI design. Software maintenance. Software development tools. Extra fee required. (Plus-minus letter grade only)");
+//        Course test2 = new Course(2378, "CSC", "667", "01", "Internet Application Design and Development", "M", "7:00PM - 9:45PM", "Thornton Hall 210", "John Roberts", "Prerequisite: CSC 413 with grade of C or better or consent of instructor.\n" +  "Fundamental technologies on which WWW is based. Extra fee required.\n" +
+//                                         "(CSC 667/CSC 867 is a paired course offering. Students who complete the course at one level may not repeat the course at the other level.)");
+//
+//        addCourseToPlanner(test1);
+//        addCourseToPlanner(test2);
 
 
         getCourses();
@@ -211,7 +211,11 @@ public class SchedulePlanner extends AppCompatActivity {
 
                 Course course = courseArrayList.get(position);
                 //setting up courseDetailsDialog
-                detailNumberTV.setText(course.getDepartment() + " " + course.getNumber() + "." + course.getSection());
+                String numberText = course.getDepartment() + " " + course.getNumber();
+                if (course.getSection() != null && !course.getSection().isEmpty()) {
+                    numberText += "." + course.getSection();
+                }
+                detailNumberTV.setText(numberText);
                 detailNameTV.setText(course.getName());
                 detailInstructorTV.setText(course.getInstructor());
                 detailTimeTV.setText(course.getMeetTime());
@@ -365,15 +369,19 @@ public class SchedulePlanner extends AppCompatActivity {
                 viewHolder.instructor = (TextView) convertView.findViewById(R.id.dialog_course_instructor);
                 viewHolder.meetTime = (TextView) convertView.findViewById(R.id.course_meet_time);
                 viewHolder.meetDays = (TextView) convertView.findViewById(R.id.course_meet_days);
-                viewHolder.meetRoom = (TextView) convertView.findViewById(R.id.course_meet_room);
+//                viewHolder.meetRoom = (TextView) convertView.findViewById(R.id.course_meet_room);
 
 
                 //setting info
                 viewHolder.name.setText(thisCourse.getName());
-                viewHolder.number.setText(thisCourse.getDepartment() + " " + thisCourse.getNumber() + "-" + thisCourse.getSection());
+                String numberText = thisCourse.getDepartment() + " " + thisCourse.getNumber();
+                if (thisCourse.getSection() != null && !thisCourse.getSection().isEmpty()) {
+                    numberText += "." + thisCourse.getSection();
+                }
+                viewHolder.number.setText(numberText);
                 viewHolder.instructor.setText(thisCourse.getInstructor());
                 viewHolder.meetTime.setText(thisCourse.getMeetTime());
-                viewHolder.meetRoom.setText(thisCourse.getMeetRoom());
+//                viewHolder.meetRoom.setText(thisCourse.getMeetRoom());
                 viewHolder.meetDays.setText(thisCourse.getMeetDays());
                     /*   add a reference of this object into convertView, so we convertView != null
                         we can retrieve the object and directly set the new data to the ScheduleViewHolder items
@@ -384,11 +392,15 @@ public class SchedulePlanner extends AppCompatActivity {
 
                 mainViewHolder = (ScheduleViewHolder) convertView.getTag();
                 //manually set the data of list view items here//
-                mainViewHolder.number.setText(thisCourse.getDepartment() + " " + thisCourse.getNumber() + "." +  thisCourse.getSection());
+                String numberText = thisCourse.getDepartment() + " " + thisCourse.getNumber();
+                if (thisCourse.getSection() != null && !thisCourse.getSection().isEmpty()) {
+                    numberText += "." + thisCourse.getSection();
+                }
+                mainViewHolder.number.setText(numberText);
                 mainViewHolder.name.setText(thisCourse.getName());
                 mainViewHolder.instructor.setText(thisCourse.getInstructor());
                 mainViewHolder.meetTime.setText(thisCourse.getMeetTime());
-                mainViewHolder.meetRoom.setText(thisCourse.getMeetRoom());
+//                mainViewHolder.meetRoom.setText(thisCourse.getMeetRoom());
                 mainViewHolder.meetDays.setText(thisCourse.getMeetDays());
             }
 
