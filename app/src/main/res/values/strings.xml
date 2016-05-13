@@ -90,10 +90,24 @@
     </string-array>
 
     <string name="shuttle_schedule">The express shuttle runs directly between Daly City BART and the campus,stopping at 19th Avenue.</string>
-    <string name="shuttle_schedule_list">
+
+    <string name="whole_schedule">
            "<b>Hours</b>\n\n\tMonday through Thursday: 7:00 a.m. to 10:30 p.m.
-                Last 19th Avenue pick-up at 10:00 p.m.   \n\tFriday: 7:00 a.m. to 7:15 p.m.
+                Last 19th Avenue pick-up at 10:00 p.m.
+            \n\tFriday: 7:00 a.m. to 7:15 p.m.
+                Last 19th Avenue pick-up at 6:50 p.m.
+            \n\nSchedule is every 10 to 15 minutes\nShuttles stops: 19th Ave. and Daly City BART ONLY"
+    </string>
+    <string name="weekday_schedule">
+           "<b>Hours</b>\n\n\tMonday through Thursday: 7:00 a.m. to 10:30 p.m.
+                Last 19th Avenue pick-up at 10:00 p.m.
+            \n\nSchedule is every 10 to 15 minutes\nShuttles stops: 19th Ave. and Daly City BART ONLY"
+    </string>
+
+    <string name="friday_schedule">
+        "<b>Hours</b>\n\n\tFriday: 7:00 a.m. to 7:15 p.m.
                 Last 19th Avenue pick-up at 6:50 p.m. \n\nSchedule is every 10 to 15 minutes\nShuttles stops: 19th Ave. and Daly City BART ONLY"
+
     </string>
 
     <string name="sfsu_links">Official Site: sfsu.edu\nApply to SFSU: sfsu.edu/prospect\nSFSU Bulletin: bulletin.sfsu.edu/ \n
@@ -103,6 +117,6 @@
     <string name="map_image_view">Map Image view</string>
     <string name="time_to_next_shuttle">Time to Next Shuttle</string>
     <string name="_00_00">00:00</string>
-    <string name="get_next_shuttle">Get Next Shuttle</string>
+    <string name="get_next_shuttle">Next Shuttle</string>
 
 </resources>

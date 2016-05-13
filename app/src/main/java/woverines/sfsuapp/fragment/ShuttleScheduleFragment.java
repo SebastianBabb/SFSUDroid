@@ -31,7 +31,9 @@ public class ShuttleScheduleFragment extends Fragment{
     private Button timeButton;
     private TextView timerView;
     private TextView timerDescription;
+    private TextView daySchedule;
     private Timer countdown;
+    private Calendar c;
 
     public ShuttleScheduleFragment() {
     }
@@ -57,9 +59,28 @@ public class ShuttleScheduleFragment extends Fragment{
         View rootView = inflater.inflate(R.layout.fragment_shuttle_schedule, container, false);
         Bundle args = getArguments();
         final TextView textView = (TextView) rootView.findViewById(R.id.section_label);
+
+
         timeButton = (Button) rootView.findViewById(R.id.ShuttleButton);
         timerView = (TextView) rootView.findViewById(R.id.timerText);
         timerDescription = (TextView) rootView.findViewById(R.id.shuttleDescription);
+
+        daySchedule = (TextView) rootView.findViewById(R.id.daySchedule);
+        c = Calendar.getInstance();
+        int day = c.get(Calendar.DAY_OF_WEEK);
+        if(day > 1 && day <6){
+            //Log.d("mon-thu","week");
+            daySchedule.setText(R.string.weekday_schedule);
+        }else if(day == 6){
+            //Log.d("fri","week");
+            daySchedule.setText(R.string.friday_schedule);
+        }else{
+            //Log.d("weekend","week");
+            daySchedule.setText(R.string.whole_schedule);
+        }
+
+
+
 
         timeButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -78,7 +99,7 @@ public class ShuttleScheduleFragment extends Fragment{
     }
 
     public void makeNewTimer(){
-        Calendar c = Calendar.getInstance();
+        //c = Calendar.getInstance();
         long currentTime = makeMs(c.get(Calendar.HOUR_OF_DAY),
                 c.get(Calendar.MINUTE),c.get(Calendar.SECOND));
 
