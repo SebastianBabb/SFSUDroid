@@ -265,7 +265,11 @@ public class StaffDirectory extends AppCompatActivity implements OnItemSelectedL
                 for (String professor : professors) {
                     int random = (int) (Math.random() * 10000);
                     String name = professor.replace(" ", "").toLowerCase();
-                    directory.add(new Staff(professor, "(555) 555-" + random, name + "@sfsu.edu"));
+                    directory.add(new Staff(
+                        professor,
+                        "(555) 555-" + String.format("%4d", random).replace(" ", "0"),
+                        name + "@sfsu.edu"
+                    ));
                 }
 
                 refresh();
