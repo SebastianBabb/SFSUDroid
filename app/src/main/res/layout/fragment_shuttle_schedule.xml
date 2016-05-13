@@ -72,14 +72,28 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:id="@+id/shuttleDescription"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="5dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:id="@+id/timerText"
-                android:text="00:00" />
+                android:text="@string/_00_00"
+                style="@style/AppTheme"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="5dp" />
 
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Get Next Shuttle"
-                android:id="@+id/ShuttleButton" />
+                android:text="@string/get_next_shuttle"
+                android:id="@+id/ShuttleButton"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="10dp" />
 
         </LinearLayout>
 

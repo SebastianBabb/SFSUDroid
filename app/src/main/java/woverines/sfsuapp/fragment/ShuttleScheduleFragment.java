@@ -30,6 +30,7 @@ public class ShuttleScheduleFragment extends Fragment{
     private static final String ARG_TEXT = "text";
     private Button timeButton;
     private TextView timerView;
+    private TextView timerDescription;
     private Timer countdown;
 
     public ShuttleScheduleFragment() {
@@ -58,14 +59,17 @@ public class ShuttleScheduleFragment extends Fragment{
         final TextView textView = (TextView) rootView.findViewById(R.id.section_label);
         timeButton = (Button) rootView.findViewById(R.id.ShuttleButton);
         timerView = (TextView) rootView.findViewById(R.id.timerText);
+        timerDescription = (TextView) rootView.findViewById(R.id.shuttleDescription);
 
-        countdown = new Timer(180000,1000);
-        makeNewTimer();
         timeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                try {
+                    countdown.cancel();
+                }catch(Exception e){
+
+                }
                 makeNewTimer();
-                countdown.start();
             }
         });
 
@@ -75,13 +79,52 @@ public class ShuttleScheduleFragment extends Fragment{
 
     public void makeNewTimer(){
         Calendar c = Calendar.getInstance();
-        long ms = TimeUnit.HOURS.toMillis(c.get(Calendar.HOUR_OF_DAY))+
-                TimeUnit.MINUTES.toMillis(c.get(Calendar.MINUTE))+
-                TimeUnit.SECONDS.toMillis(c.get(Calendar.SECOND));
+        long currentTime = makeMs(c.get(Calendar.HOUR_OF_DAY),
+                c.get(Calendar.MINUTE),c.get(Calendar.SECOND));
 
+        long firstShuttleTime = makeMs(7,0,0);
+        long lastShuttleTime;
+        int day = c.get(Calendar.DAY_OF_WEEK);
 
+        //hard coding time for testing scenareos
+        //currentTime = makeMs(13,40,41);
+        //day = 5;
+
+        if(day > 1 && day <6){
+            //Log.d("mon-thu","week");
+            lastShuttleTime = makeMs(22,30,0);
+
+        }else if(day == 6){
+            //Log.d("fri","week");
+            lastShuttleTime = makeMs(19,15,0);
+        }else{
+            //Log.d("weekend","week");
+            firstShuttleTime = 0;
+            lastShuttleTime = 0;
+        }
+
+        if (currentTime<firstShuttleTime){
+            //Log.d("before shuttle","week");
+            timerDescription.setText("First shuttle in:");
+            countdown = new Timer(firstShuttleTime - currentTime, 1000);
+            countdown.start();
+        }else if(currentTime < lastShuttleTime){
+            //Log.d("mid shuttle","week");
+            timerDescription.setText("Shuttles run for:");
+            countdown = new Timer(lastShuttleTime-currentTime,1000);
+            countdown.start();
+        }else{
+            //Log.d("after Shuttle","week");
+            timerDescription.setText("There are no more shuttles running");
+        }
     }
 
+    public long makeMs(int hr, int min, int sec){
+        return TimeUnit.HOURS.toMillis(hr)+
+                TimeUnit.MINUTES.toMillis(min)+
+                TimeUnit.SECONDS.toMillis(sec);
+
+    }
     public class Timer extends CountDownTimer{
 
         /**
@@ -102,7 +145,7 @@ public class ShuttleScheduleFragment extends Fragment{
             msRemaining = millisUntilFinished;
             hrRemaining = TimeUnit.MILLISECONDS.toHours(msRemaining);
             minRemaining = TimeUnit.MILLISECONDS.toMinutes(msRemaining) - 60*hrRemaining;
-            secRemaining = TimeUnit.MILLISECONDS.toSeconds(msRemaining) - 60*minRemaining;
+            secRemaining = TimeUnit.MILLISECONDS.toSeconds(msRemaining) - (60*60*hrRemaining) - (60*minRemaining);
             String timeString = String.format("%02d:%02d:%02d",hrRemaining,minRemaining,secRemaining);
             timerView.setText(timeString);
 

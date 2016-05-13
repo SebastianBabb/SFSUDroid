@@ -102,5 +102,7 @@
     <string name="shuttle_map">Shuttle Map</string>
     <string name="map_image_view">Map Image view</string>
     <string name="time_to_next_shuttle">Time to Next Shuttle</string>
+    <string name="_00_00">00:00</string>
+    <string name="get_next_shuttle">Get Next Shuttle</string>
 
 </resources>
