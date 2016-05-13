@@ -98,5 +98,9 @@
 
     <string name="sfsu_links">Official Site: sfsu.edu\nApply to SFSU: sfsu.edu/prospect\nSFSU Bulletin: bulletin.sfsu.edu/ \n
     </string>
+    <string name="daly_city_bart_express_shuttles">Daly City BART Express Shuttles</string>
+    <string name="shuttle_map">Shuttle Map</string>
+    <string name="map_image_view">Map Image view</string>
+    <string name="time_to_next_shuttle">Time to Next Shuttle</string>
 
 </resources>
