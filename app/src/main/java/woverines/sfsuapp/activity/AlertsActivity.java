@@ -268,6 +268,11 @@ public class AlertsActivity extends AppCompatActivity implements OnItemSelectedL
             AlertHelper.removeAlarmDatabase(this, alert.id);
         }
 
+        Intent intent = new Intent();
+        intent.putExtra(EXTRA_COURSE_ID, courseId);
+        intent.putExtra(EXTRA_ALERT, alert);
+
+        setResult(RESULT_OK, intent);
         finish();
     }
 

@@ -222,14 +222,8 @@ public class SchedulePlanner extends AppCompatActivity {
                 detailDescriptionTV.setText(course.getDescription());
                 detailMeetDaysTV.setText(course.getMeetDays());
 
-
-                detailAlerts.removeAllViews();
-
                 final int courseId = course.getId();
-                List<Alert> alerts = ALERTS_TABLE.getAlerts(getApplicationContext(), courseId, 0);
-                for (Alert alert : alerts) {
-                    insertAlert(alert, -1);
-                }
+                refreshAlerts(courseId);
 
                 //add go to addEven activity
                 detailAddEventB.setOnClickListener(new View.OnClickListener() {
@@ -253,6 +247,15 @@ public class SchedulePlanner extends AppCompatActivity {
         });
     }
 
+    public void refreshAlerts(int courseId) {
+        detailAlerts.removeAllViews();
+
+        List<Alert> alerts = ALERTS_TABLE.getAlerts(getApplicationContext(), courseId, 0);
+        for (Alert alert : alerts) {
+            insertAlert(alert, -1);
+        }
+    }
+
     public void goToAlerts(int courseId, Alert alert) {
         Intent goToAlertsIntent = new Intent(this, AlertsActivity.class);
         goToAlertsIntent.putExtra(AlertsActivity.EXTRA_COURSE_ID, courseId);
@@ -263,10 +266,11 @@ public class SchedulePlanner extends AppCompatActivity {
 
     public void handleAlert(int resultCode, Intent data) {
         if (resultCode == RESULT_OK) {
+            int courseId = data.getIntExtra(AlertsActivity.EXTRA_COURSE_ID, 0);
             Alert alert = data.getParcelableExtra(AlertsActivity.EXTRA_ALERT);
 
             if (alert != null) {
-                insertAlert(alert, 0);
+                refreshAlerts(courseId);
             }
         }
     }
