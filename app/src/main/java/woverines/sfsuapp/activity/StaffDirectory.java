@@ -9,7 +9,9 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -19,12 +21,24 @@ import java.util.Map;
 
 import woverines.sfsuapp.R;
 import woverines.sfsuapp.activity.StaffDirectoryAdapter.StaffDirectoryListener;
+import woverines.sfsuapp.api.API_RequestBuilder;
+import woverines.sfsuapp.api.Callback;
 import woverines.sfsuapp.database.Staff;
+import woverines.sfsuapp.models.CoursesModels;
+import woverines.sfsuapp.models.NULLOBJ;
+import woverines.sfsuapp.models.Professors;
 
+/**
+ * Staff Directory is responsible for displaying a list of staff members from each department.
+ *
+ * @author Gary Ng
+ */
 public class StaffDirectory extends AppCompatActivity implements OnItemSelectedListener,
         StaffDirectoryListener {
 
     private Spinner spinner;
+    private TextView msg;
+    private ProgressBar progress;
     private ArrayAdapter<String> spinnerAdapter;
     private List<String> departments = new ArrayList<>();
     private Map<String, String> departmentMap = new HashMap<>();
@@ -54,12 +68,18 @@ public class StaffDirectory extends AppCompatActivity implements OnItemSelectedL
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter = new StaffDirectoryAdapter(directory, this));
 
-        demo();
+        msg = (TextView) findViewById(R.id.msg);
+        msg.setVisibility(View.INVISIBLE);
+
+        progress = (ProgressBar) findViewById(R.id.progress);
+        progress.setVisibility(View.INVISIBLE);
     }
 
     @Override
     public void onItemSelected(AdapterView parent, View view, int position, long id) {
-        String department = departments.get(position);
+        String department = departmentMap.get(departments.get(position));
+//        department = departments.get(position);
+        select(department);
     }
 
     @Override
@@ -190,12 +210,81 @@ public class StaffDirectory extends AppCompatActivity implements OnItemSelectedL
         Collections.sort(departments);
     }
 
-    public void demo() {
-        for (int i = 0; i < 20; i++) {
-            int random = (int) (Math.random() * 10000);
-            directory.add(new Staff("Name " + random, "(555) 555-" + random, "name" + random + "@sfsu.edu"));
-        }
+    /**
+     * Retrieves a list of staff members from remote server to be displayed.
+     *
+     * @param department key
+     */
+    public void select(String department) {
+        directory.clear();
+        adapter.notifyDataSetChanged();
 
+        progress.setVisibility(View.VISIBLE);
+
+        API_RequestBuilder builder = new API_RequestBuilder();
+//        builder.populateModel(department, new Professors(), new Callback() {
+//            @Override
+//            public void response(Object object) {
+//                Professors professors  = (Professors) object;
+//
+//                for (String professor : professors.professors) {
+//                    int random = (int) (Math.random() * 10000);
+//                    directory.add(new Staff(professor, "(555) 555-" + random, "name" + random + "@sfsu.edu"));
+//                }
+//
+//                refresh();
+//            }
+//
+//            @Override
+//            public void error(NULLOBJ nullObj) {
+//                refresh();
+//            }
+//        });
+        builder.populateModel(department, new CoursesModels(), new Callback() {
+            @Override
+            public void response(Object object) {
+                CoursesModels model  = (CoursesModels) object;
+
+                List<String> professors = new ArrayList<>();
+
+                for (CoursesModels.Course course : model.classes) {
+                    String name = course.teacher_first_name;
+                    if (course.teacher_last_name != null) {
+                        name += " " + course.teacher_last_name;
+                    }
+
+                    if (!professors.contains(name)) {
+                        professors.add(name);
+                    }
+                }
+
+                if (!professors.isEmpty()) {
+                    Collections.sort(professors);
+                }
+
+                for (String professor : professors) {
+                    int random = (int) (Math.random() * 10000);
+                    String name = professor.replace(" ", "").toLowerCase();
+                    directory.add(new Staff(professor, "(555) 555-" + random, name + "@sfsu.edu"));
+                }
+
+                refresh();
+            }
+
+            @Override
+            public void error(NULLOBJ nullObj) {
+                refresh();
+            }
+        });
+    }
+
+    /**
+     * Responsible for refreshing the viewing list.
+     */
+    public void refresh() {
+        progress.setVisibility(View.INVISIBLE);
+
+        msg.setVisibility(directory.isEmpty() ? View.VISIBLE : View.INVISIBLE);
         adapter.notifyDataSetChanged();
     }
 }

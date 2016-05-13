@@ -16,9 +16,30 @@
         android:layout_height="0.5dp"
         android:background="@android:color/darker_gray"/>
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/directory"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"/>
+        android:layout_weight="1">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/directory"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+        <TextView
+            android:id="@+id/msg"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="No Staff Found"
+            android:textColor="@android:color/black"
+            android:textSize="16sp"/>
+
+        <ProgressBar
+            android:id="@+id/progress"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            style="?android:attr/progressBarStyleLarge"/>
+    </RelativeLayout>
 </LinearLayout>

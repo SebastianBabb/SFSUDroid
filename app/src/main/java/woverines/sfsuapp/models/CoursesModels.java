@@ -16,5 +16,8 @@ public class CoursesModels {
         public String course_time;
         public String course_meeting_day;
         public String course_teacher_name;
+        public String teacher_first_name;
+        public String teacher_id;
+        public String teacher_last_name;
     }
 }
