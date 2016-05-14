@@ -10,7 +10,7 @@
 
     <ScrollView
         android:layout_width="wrap_content"
-        android:layout_height="100dp"
+        android:layout_height="115dp"
         android:id="@+id/scrollView2"
         android:layout_gravity="center_horizontal|bottom"
         android:layout_alignParentBottom="true"
@@ -54,21 +54,25 @@
             android:layout_weight=".75">
 
             <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:adjustViewBounds="true"
                 android:scaleType="centerCrop"
                 android:id="@+id/ShuttleMapFrame"
                 android:src="@drawable/smallmap"
                 android:contentDescription="@string/map_image_view"
-                android:layout_gravity="top" />
+                android:layout_gravity="top"
+                android:focusable="false"
+                android:focusableInTouchMode="true" />
         </FrameLayout>
 
         <LinearLayout
             android:orientation="vertical"
             android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight=".25">
+            android:layout_height="wrap_content"
+            android:layout_weight=".25"
+            android:background="#a517e3"
+            android:layout_gravity="center_vertical">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -86,7 +90,9 @@
                 style="@style/AppTheme"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="5dp"
-                android:layout_marginBottom="5dp" />
+                android:layout_marginBottom="5dp"
+                android:background="#ffffff"
+                android:padding="5dp" />
 
             <Button
                 android:layout_width="84dp"
