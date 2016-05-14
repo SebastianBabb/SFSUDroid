@@ -7,48 +7,48 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="Course Name"
         android:id="@+id/dialog_course_name"
         android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:textAlignment="center"/>
 
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="course num"
         android:id="@+id/dialog_course_number"
         android:layout_below="@+id/dialog_course_name"
         android:layout_centerHorizontal="true" />
 
-    <Space
-        android:layout_width="20px"
-        android:layout_height="20px"
-        android:background="@android:drawable/divider_horizontal_dim_dark"
-        android:id="@+id/space"
-        android:layout_below="@+id/dialog_course_name"
-        android:layout_alignParentEnd="true"
-        android:layout_marginTop="19dp" />
+    <!--<Space-->
+        <!--android:layout_width="20dp"-->
+        <!--android:layout_height="20dp"-->
+        <!--android:background="@android:drawable/divider_horizontal_dim_dark"-->
+        <!--android:id="@+id/space"-->
+        <!--android:layout_below="@+id/dialog_course_name"-->
+        <!--android:layout_alignParentEnd="true"-->
+        <!--android:layout_marginTop="19dp" />-->
 
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_centerHorizontal="true"
-        android:weightSum="1"
         android:id="@+id/linearLayout"
-        android:layout_below="@+id/dialog_course_instructor">
+        android:layout_below="@+id/dialog_course_number">
 
         <LinearLayout
             android:orientation="horizontal"
-            android:paddingLeft="4.0dip"
-            android:paddingTop="5.0dip"
-            android:paddingRight="4.0dip"
-            android:paddingBottom="1.0dip"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content">
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -67,9 +67,17 @@
                 android:id="@+id/dialog_meet_time" />
         </LinearLayout>
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="instructor"
+            android:id="@+id/dialog_course_instructor"/>
+
         <ScrollView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
             android:id="@+id/scrollView"
             android:layout_weight="0.89" >
 
@@ -140,14 +148,7 @@
 
     </LinearLayout>
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="instructor"
-        android:id="@+id/dialog_course_instructor"
-        android:layout_below="@+id/dialog_course_number"
-        android:layout_centerHorizontal="true" />
+
 
 
 </RelativeLayout>

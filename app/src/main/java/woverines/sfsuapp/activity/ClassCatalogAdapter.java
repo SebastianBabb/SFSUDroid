@@ -36,7 +36,7 @@ public class ClassCatalogAdapter extends RecyclerView.Adapter<ClassCatalogAdapte
         Course course = courseList.get(position);
         String courseNumber = course.getDepartment() + " " + course.getNumber();
         if (course.getSection() != null && !course.getSection().isEmpty()) {
-            courseNumber += "-" + course.getSection();
+            courseNumber += "." + course.getSection();
         }
         holder.courseNumber.setText(courseNumber);
         holder.courseTitle.setText(course.getName());

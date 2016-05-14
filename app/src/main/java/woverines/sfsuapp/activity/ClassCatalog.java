@@ -7,11 +7,13 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -38,7 +40,7 @@ public class ClassCatalog extends AppCompatActivity implements ClassCatalogAdapt
     private List<Course> courseList;
     private ClassCatalogAdapter adapter;
     private RecyclerView courseListView;
-    private TextView departmentInput;
+    private AutoCompleteTextView departmentInput;
     private Dialog courseDetailDialog;
     private TextView detailNumberTV;
     private TextView detailNameTV;
@@ -48,6 +50,8 @@ public class ClassCatalog extends AppCompatActivity implements ClassCatalogAdapt
     private TextView detailDescriptionTV;
     private Button detailCancelB;
     private Button detailAddEventB;
+    private LinearLayout catalogContentLayout;
+    private TextView emptyView;
 
     private API_RequestBuilder api_requestBuilder;
     private DepartmentsModel departments;
@@ -74,8 +78,20 @@ public class ClassCatalog extends AppCompatActivity implements ClassCatalogAdapt
         courseListView.setAdapter(adapter);
         departmentInput = (AutoCompleteTextView) findViewById(R.id.department_input);
 
+        catalogContentLayout = (LinearLayout) findViewById(R.id.catalog_content_layout);
+        emptyView = (TextView) findViewById(R.id.catalog_empty_view);
+//        if (courseList.isEmpty()) {
+//            catalogContentLayout.removeView(courseListView);
+//        } else {
+//            catalogContentLayout.removeView(emptyView);
+//        }
+
+        if (!courseList.isEmpty()) {
+            catalogContentLayout.removeView(emptyView);
+        }
+
         courseDetailDialog = new Dialog(this);
-        courseDetailDialog.setContentView(R.layout.catalog_details_dialog_new);
+        courseDetailDialog.setContentView(R.layout.dialog_class_catalog);
         courseDetailDialog.setTitle("Course Options");
         //connecting TextViews to dialog
         detailNumberTV = (TextView) courseDetailDialog.findViewById(R.id.dialog_course_number);
@@ -97,20 +113,25 @@ public class ClassCatalog extends AppCompatActivity implements ClassCatalogAdapt
             @Override
             public void onClick(View view) {
                 addSelectedCourse();
-                detailAddEventB.setEnabled(false);
+                courseDetailDialog.dismiss();
             }
         });
 
-        final AutoCompleteTextView departmentInput = (AutoCompleteTextView) findViewById(R.id.department_input);
-//        departmentList = new ArrayList<>(departmentMap.keySet());
+        departmentInput = (AutoCompleteTextView) findViewById(R.id.department_input);
 
-//        Collections.sort(departmentList);
         ArrayAdapter<String> departmentAdapter = new ArrayAdapter<String>(this, R.layout.department_autocomplete_popup_item, departmentList);
         departmentInput.setAdapter(departmentAdapter);
         departmentInput.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 departmentInput.showDropDown();
+            }
+        });
+        departmentInput.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
+                filterCourses(textView);
+                return true;
             }
         });
 
@@ -133,17 +154,36 @@ public class ClassCatalog extends AppCompatActivity implements ClassCatalogAdapt
     private void setCourseListFromCoursesModels(CoursesModels models) {
         courseList.clear();
         for (CoursesModels.Course apiCourse : models.classes) {
-            int firstSpaceIndex = apiCourse.course_time.indexOf(' ');
-            String courseDays = "", courseTime;
-            if (firstSpaceIndex > 0) {
-                courseDays = apiCourse.course_time.substring(0, firstSpaceIndex);
-                courseTime = apiCourse.course_time.substring(firstSpaceIndex+1);
-            } else {
-                courseTime = apiCourse.course_time;
+            String[] dayTimeArray= apiCourse.course_time.split("\r");
+            String courseDays = "", courseTime = "";
+            for (int i=0; i<dayTimeArray.length; i++) {
+                int firstSpaceIndex = dayTimeArray[i].indexOf(' ');
+                if (firstSpaceIndex > 0) {
+                    courseDays += dayTimeArray[i].substring(0, firstSpaceIndex);
+                    courseTime += dayTimeArray[i].substring(firstSpaceIndex+1);
+                    if (i < dayTimeArray.length-1) {
+                        courseDays += "\n";
+                        courseTime += "\n";
+                    }
+                } else {
+                    courseTime += dayTimeArray[i];
+                }
             }
 
-            Course course = new Course(0, apiCourse.course_subject, apiCourse.course_number, apiCourse.section_number,
-                    apiCourse.course_name, courseDays, courseTime, "", apiCourse.course_teacher_name, apiCourse.course_description);
+            String instructor = "";
+            if (apiCourse.teacher_first_name != null) {
+                instructor += apiCourse.teacher_first_name;
+            }
+            if (apiCourse.teacher_last_name != null) {
+                if (!instructor.isEmpty()) {
+                    instructor += " ";
+                }
+                instructor += apiCourse.teacher_last_name;
+            }
+
+            instructor = instructor.replace("\r", "\n");
+            Course course = new Course(0, apiCourse.course_subject, apiCourse.course_number+"", apiCourse.section_number,
+                    apiCourse.course_name, courseDays, courseTime, "", instructor, apiCourse.course_description);
             courseList.add(course);
         }
     }
@@ -155,6 +195,7 @@ public class ClassCatalog extends AppCompatActivity implements ClassCatalogAdapt
         }
         if (!departmentList.contains(selectedDepartment)) {
             Toast.makeText(this, "Not a valid department. Please check your selection.", Toast.LENGTH_LONG).show();
+            return;
         }
 //        String selectedCourseNumber = courseNumberInput.getText().toString();
 
@@ -164,9 +205,16 @@ public class ClassCatalog extends AppCompatActivity implements ClassCatalogAdapt
             @Override
             public void response(Object object) {
                 courses  = (CoursesModels) object;
+                Collections.sort(courses.classes);
                 setCourseListFromCoursesModels((CoursesModels) object);
-                adapter.notifyDataSetChanged();
-                Toast.makeText(ClassCatalog.this, "Courses retrieved from server", Toast.LENGTH_SHORT).show();
+                if (courseList.isEmpty()) {
+                    Toast.makeText(ClassCatalog.this, "No courses found for " + selectedDepartment, Toast.LENGTH_SHORT).show();
+                } else {
+                    catalogContentLayout.removeView(emptyView);
+                    adapter.notifyDataSetChanged();
+                    Toast.makeText(ClassCatalog.this, "Courses retrieved from server", Toast.LENGTH_SHORT).show();
+                }
+
             }
 
             @Override
@@ -337,15 +385,15 @@ public class ClassCatalog extends AppCompatActivity implements ClassCatalogAdapt
     @Override
     public void onCatalogItemClicked(int position) {
         selectedCourse = courseList.get(position);
-        String numberString = "<b>" + selectedCourse.getDepartment() + " " + selectedCourse.getNumber() + "</b>";
+        String numberString = selectedCourse.getDepartment() + " " + selectedCourse.getNumber();
         if (selectedCourse.getSection() != null && !selectedCourse.getSection().isEmpty()) {
-            numberString += "-" + selectedCourse.getSection();
+            numberString += "." + selectedCourse.getSection();
         }
         String titleString =  selectedCourse.getName();
-        String dayString = "<b>Days: </b> " + selectedCourse.getMeetDays();
-        String timeString = "<b>Time: </b>" + selectedCourse.getMeetTime();
-        String instructorString = "<b>Instructor:</b> " + (selectedCourse.getInstructor()==null ? "" : selectedCourse.getInstructor());
-        String descriptionString = "<b>Description:</b> " + (selectedCourse.getDescription()==null ? "" : selectedCourse.getDescription());
+        String dayString = selectedCourse.getMeetDays().replace("\n", "<br>");
+        String timeString = selectedCourse.getMeetTime().replace("\n", "<br>");
+        String instructorString = "<b>Instructor: </b>" + (selectedCourse.getInstructor()==null ? "" : selectedCourse.getInstructor().replace("\n", "<br>"));
+        String descriptionString = "<b>Description: </b>" + (selectedCourse.getDescription()==null ? "" : selectedCourse.getDescription());
         detailNumberTV.setText(Html.fromHtml(numberString));
         detailNameTV.setText(Html.fromHtml(titleString));
         detailInstructorTV.setText(Html.fromHtml(instructorString));

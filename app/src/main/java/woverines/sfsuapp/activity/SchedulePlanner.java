@@ -76,7 +76,7 @@ public class SchedulePlanner extends AppCompatActivity {
 
         //SET UP REVIEW DIALOG
         courseDetailDialog = new Dialog(SchedulePlanner.this);
-        courseDetailDialog.setContentView(R.layout.course_details_dialog);
+        courseDetailDialog.setContentView(R.layout.dialog_schedule_planner);
         courseDetailDialog.setTitle("Course Options");
 
         //connecting TextViews to dialog
@@ -105,7 +105,7 @@ public class SchedulePlanner extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 COURSE_TABLE.resetTable(getApplicationContext());
-
+                courseArrayList.clear();
                 scheduleAdapter.notifyDataSetChanged();
             }
         });
