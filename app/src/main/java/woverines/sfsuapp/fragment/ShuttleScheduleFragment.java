@@ -66,6 +66,7 @@ public class ShuttleScheduleFragment extends Fragment{
         timerDescription = (TextView) rootView.findViewById(R.id.shuttleDescription);
 
         daySchedule = (TextView) rootView.findViewById(R.id.daySchedule);
+
         c = Calendar.getInstance();
         int day = c.get(Calendar.DAY_OF_WEEK);
         if(day > 1 && day <6){
@@ -86,6 +87,7 @@ public class ShuttleScheduleFragment extends Fragment{
             @Override
             public void onClick(View v) {
                 try {
+                    c = Calendar.getInstance();
                     countdown.cancel();
                 }catch(Exception e){
 
