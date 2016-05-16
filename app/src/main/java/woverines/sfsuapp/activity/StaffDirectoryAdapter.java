@@ -12,6 +12,11 @@ import java.util.List;
 import woverines.sfsuapp.R;
 import woverines.sfsuapp.database.Staff;
 
+/**
+ * Adapter used to display the staff directory listings.
+ *
+ * @author Gary Ng
+ */
 public class StaffDirectoryAdapter extends RecyclerView.Adapter<StaffDirectoryAdapter.Holder> {
 
     private List<Staff> directory;

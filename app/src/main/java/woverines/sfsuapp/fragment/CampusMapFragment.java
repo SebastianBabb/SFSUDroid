@@ -1,7 +1,6 @@
 package woverines.sfsuapp.fragment;
 
 import android.Manifest;
-import android.content.Context;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
@@ -39,11 +38,8 @@ import com.google.android.gms.maps.model.PolylineOptions;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.util.Arrays;
 import java.util.List;
 
 import woverines.sfsuapp.Maps.MapData;
@@ -71,9 +67,10 @@ public class CampusMapFragment extends Fragment implements OnMapReadyCallback, O
     private GoogleMap gMap;
     private GoogleApiClient mGoogleApiClient;
 
+    private Marker startLocation;
     private LatLng lastKnownLocation = SFSU;
     private MapData mapData;
-
+    private boolean mapReady = false;
 
     // map creation fields
     // will all be unused during normal use
@@ -82,9 +79,6 @@ public class CampusMapFragment extends Fragment implements OnMapReadyCallback, O
     private boolean buildingInit = false;
     private int nodeCount = 0;
     private boolean nodeLinking = false;
-
-    public CampusMapFragment() {
-    }
 
     /**
      * Returns a new instance of this fragment for the given section
@@ -148,7 +142,7 @@ public class CampusMapFragment extends Fragment implements OnMapReadyCallback, O
     public void onMapReady(GoogleMap googleMap) {
         gMap = googleMap;
 
-        Log.d("Testing Map ready", "testing");
+        Log.d("Map ready", "Campus map");
 
         gMap.setOnMapClickListener(this);
         gMap.setOnMarkerClickListener(this);
@@ -156,12 +150,22 @@ public class CampusMapFragment extends Fragment implements OnMapReadyCallback, O
                         new LatLngBounds(new LatLng(37.72083239241096,-122.48518355190754),
                                             new LatLng(37.72567087764266,-122.47505284845829)), 0));
 
+        startLocation = gMap.addMarker(new MarkerOptions().position(SFSU).title("start"));
+
         if(nodeCreation) {
             for(MapNode node: mapData.getNodes().values()) {
                 gMap.addMarker(new MarkerOptions().position(node.getCoords())
                         .title("Node #" + node.getId()));
+                for(MapNode temp : node.getAdjacentNodes()) {
+                    PolylineOptions polylineOptions = new PolylineOptions();
+                    polylineOptions.add(node.getCoords());
+                    polylineOptions.add(temp.getCoords());
+                    gMap.addPolyline(polylineOptions);
+                }
             }
         }
+
+        mapReady =true;
     }
 
     @Override
@@ -194,6 +198,8 @@ public class CampusMapFragment extends Fragment implements OnMapReadyCallback, O
             }
             buildingInit = false;
         } else {
+            startLocation.remove();
+            startLocation = gMap.addMarker(new MarkerOptions().position(latLng).title("Start"));
             Log.i("Location", latLng.toString());
         }
     }
@@ -229,22 +235,26 @@ public class CampusMapFragment extends Fragment implements OnMapReadyCallback, O
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        if(nodeCreation == true) {
-            currentBuilding = (String) parent.getItemAtPosition(position);
-            buildingInit = true;
-        } else {
-            updateLocation();
+        if(mapReady) {
+            if (nodeCreation) {
+                currentBuilding = (String) parent.getItemAtPosition(position);
+                buildingInit = true;
+            } else {
+//            updateLocation();
+                lastKnownLocation = startLocation.getPosition();
 
-            LatLng currentCoords = lastKnownLocation;
+                LatLng currentCoords = lastKnownLocation;
+                if (position != 0) {
+                    String building = (String) parent.getItemAtPosition(position);
+                    MapPathfinder pathfinder = new MapPathFinderAStar();
 
-            if (position != 0) {
-                String building = (String) parent.getItemAtPosition(position);
-                MapPathfinder pathfinder = new MapPathFinderAStar();
-
-                pathfinder.setMapData(mapData);
-                pathfinder.setStart(mapData.getNearestNode(currentCoords));
-                pathfinder.setDestination(mapData.getBuildingNode(building, currentCoords));
-                drawPath(pathfinder.getPath());
+                    pathfinder.setMapData(mapData);
+                    MapNode nearest = mapData.getNearestNode(currentCoords);
+                    Log.i("Nearest Node", "#" + nearest.getId());
+                    pathfinder.setStart(nearest);
+                    pathfinder.setDestination(mapData.getBuildingNode(building, currentCoords));
+                    drawPath(pathfinder.getPath());
+                }
             }
         }
     }

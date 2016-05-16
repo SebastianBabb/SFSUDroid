@@ -48,9 +48,11 @@ public class DBHandler extends SQLiteOpenHelper {
         {
             //TODO Create run all Create Tables Query here!!!!!!
             db.execSQL(ALERTS_TABLE.CREATE_QUERY);
-
+            db.execSQL(COURSE_TABLE.CREATE_QUERY);
             Log.i(TAG, "Properly Created Database..");
         }
+
+
 
         /**
          * @author Allen Space

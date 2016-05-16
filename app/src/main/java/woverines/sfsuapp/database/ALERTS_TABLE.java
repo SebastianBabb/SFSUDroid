@@ -1,15 +1,21 @@
 package woverines.sfsuapp.database;
 
-
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
+/**
+ * Alerts Table contains instructions to create this particular schema. Contains many queries to
+ * perform calls to database to insert, update, delete, etc.
+ *
+ * @author Gary Ng
+ */
 public class ALERTS_TABLE {
 
     public static final String TABLE_ALERTS = "alerts";
@@ -62,19 +68,19 @@ public class ALERTS_TABLE {
      * @param alert contains Alert values
      * @return id
      */
-    public static long createAlert(Context context, Alerts alert) {
+    public static long createAlert(Context context, Alert alert) {
         long id;
 
         SQLiteDatabase database = new DBHandler(context).getWritableDatabase();
 
         ContentValues values = new ContentValues();
-        values.put(COLUMN_COURSE_ID, alert.getCourseID());
-        values.put(COLUMN_TEXT, alert.getText());
-        values.put(COLUMN_TIME, alert.getmTime());
-        values.put(COLUMN_REMINDER, alert.getmReminder());
-        values.put(COLUMN_SOUND, alert.getmSound());
-        values.put(COLUMN_VIBRATE, alert.getmVibrate());
-        values.put(COLUMN_REPEAT, alert.getmReapeat());
+        values.put(COLUMN_COURSE_ID, alert.courseId);
+        values.put(COLUMN_TEXT, alert.alertText);
+        values.put(COLUMN_TIME, alert.time);
+        values.put(COLUMN_REMINDER, alert.reminder);
+        values.put(COLUMN_SOUND, alert.sound != null ? alert.sound.toString() : null);
+        values.put(COLUMN_VIBRATE, alert.vibrate ? 1 : 0);
+        values.put(COLUMN_REPEAT, alert.repeat ? 1 : 0);
 
         id = database.insert(TABLE_ALERTS, null, values);
 
@@ -90,8 +96,8 @@ public class ALERTS_TABLE {
      * @param id contains alert ID
      * @return alert
      */
-    public static Alerts getAlert(Context context, long id) {
-        Alerts alert = null;
+    public static Alert getAlert(Context context, long id) {
+        Alert alert = null;
 
         SQLiteDatabase database = new DBHandler(context).getWritableDatabase();
 
@@ -124,10 +130,10 @@ public class ALERTS_TABLE {
      * @param startTime contains time in milliseconds
      * @return list of alerts
      */
-    public static List<Alerts> getAlerts(Context context, long startTime) {
+    public static List<Alert> getAlerts(Context context, long startTime) {
         checkRepeats(context);
 
-        List<Alerts> alerts = new ArrayList<>();
+        List<Alert> alerts = new ArrayList<>();
 
         SQLiteDatabase database = new DBHandler(context).getWritableDatabase();
 
@@ -144,7 +150,7 @@ public class ALERTS_TABLE {
         );
 
         while (cursor.moveToNext()) {
-            Alerts alert = cursorToAlert(cursor);
+            Alert alert = cursorToAlert(cursor);
             alerts.add(alert);
         }
 
@@ -175,9 +181,9 @@ public class ALERTS_TABLE {
         Calendar calendar = Calendar.getInstance();
 
         while (cursor.moveToNext()) {
-            Alerts alert = cursorToAlert(cursor);
+            Alert alert = cursorToAlert(cursor);
 
-            calendar.setTimeInMillis(alert.getmTime());
+            calendar.setTimeInMillis(alert.time);
             int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
             int hour = calendar.get(Calendar.HOUR_OF_DAY);
             int minute = calendar.get(Calendar.MINUTE);
@@ -198,7 +204,7 @@ public class ALERTS_TABLE {
                 values,
                 COLUMN_ALERTS_ID + " = ?",
                 new String[]{
-                    String.valueOf(alert.getAlertID())
+                    String.valueOf(alert.id)
                 }
             );
         }
@@ -215,10 +221,10 @@ public class ALERTS_TABLE {
      * @param startTime contains time in milliseconds
      * @return list of alerts
      */
-    public static List<Alerts> getAlerts(Context context, int courseId, long startTime) {
+    public static List<Alert> getAlerts(Context context, int courseId, long startTime) {
         checkRepeats(context);
 
-        List<Alerts> alerts = new ArrayList<>();
+        List<Alert> alerts = new ArrayList<>();
 
         SQLiteDatabase database = new DBHandler(context).getWritableDatabase();
 
@@ -236,7 +242,7 @@ public class ALERTS_TABLE {
         );
 
         while (cursor.moveToNext()) {
-            Alerts alert = cursorToAlert(cursor);
+            Alert alert = cursorToAlert(cursor);
             alerts.add(alert);
         }
 
@@ -253,26 +259,26 @@ public class ALERTS_TABLE {
      * @param alert contains Alert values
      * @return number of rows affected
      */
-    public static int updateAlert(Context context, Alerts alert) {
+    public static int updateAlert(Context context, Alert alert) {
         int result;
 
         SQLiteDatabase database = new DBHandler(context).getWritableDatabase();
 
         ContentValues values = new ContentValues();
-        values.put(COLUMN_COURSE_ID, alert.getCourseID());
-        values.put(COLUMN_TEXT, alert.getText());
-        values.put(COLUMN_TIME, alert.getmTime());
-        values.put(COLUMN_REMINDER, alert.getmReminder());
-        values.put(COLUMN_SOUND, alert.getmSound());
-        values.put(COLUMN_VIBRATE, alert.getmVibrate());
-        values.put(COLUMN_REPEAT, alert.getmReapeat());
+        values.put(COLUMN_COURSE_ID, alert.courseId);
+        values.put(COLUMN_TEXT, alert.alertText);
+        values.put(COLUMN_TIME, alert.time);
+        values.put(COLUMN_REMINDER, alert.reminder);
+        values.put(COLUMN_SOUND, alert.sound != null ? alert.sound.toString() : null);
+        values.put(COLUMN_VIBRATE, alert.vibrate ? 1 : 0);
+        values.put(COLUMN_REPEAT, alert.repeat ? 1 : 0);
 
         result = database.update(
             TABLE_ALERTS,
             values,
             COLUMN_ALERTS_ID + " = ?",
             new String[]{
-                String.valueOf(alert.getAlertID())
+                String.valueOf(alert.id)
             }
         );
 
@@ -312,16 +318,19 @@ public class ALERTS_TABLE {
      * @param cursor contains the cursor to the results
      * @return alert
      */
-    private static Alerts cursorToAlert(Cursor cursor) {
-        return new Alerts(
-            cursor.getLong(INDEX_ALERTS_ID),
-            cursor.getInt(INDEX_COURSE_ID),
-            cursor.getLong(INDEX_TIME),
-            cursor.getString(INDEX_TEXT),
-            cursor.getInt(INDEX_REMINDER),
-            cursor.getString(INDEX_SOUND),
-            cursor.getInt(INDEX_VIBRATE),
-            cursor.getInt(INDEX_REPEAT)
-        );
+    private static Alert cursorToAlert(Cursor cursor) {
+        Alert alert = new Alert(cursor.getLong(INDEX_ALERTS_ID));
+        alert.courseId = cursor.getInt(INDEX_COURSE_ID);
+        alert.time = cursor.getLong(INDEX_TIME);
+        alert.alertText = cursor.getString(INDEX_TEXT);
+        alert.reminder = cursor.getInt(INDEX_REMINDER);
+
+        String sound = cursor.getString(INDEX_SOUND);
+        alert.sound = sound != null ? Uri.parse(sound) : null;
+
+        alert.vibrate = cursor.getInt(INDEX_VIBRATE) > 0;
+        alert.repeat = cursor.getInt(INDEX_REPEAT) > 0;
+
+        return alert;
     }
 }

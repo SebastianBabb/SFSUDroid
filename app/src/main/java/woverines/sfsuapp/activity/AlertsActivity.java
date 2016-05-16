@@ -1,15 +1,9 @@
 package woverines.sfsuapp.activity;
 
-import android.app.AlarmManager;
 import android.app.DatePickerDialog;
 import android.app.DatePickerDialog.OnDateSetListener;
-import android.app.Notification;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.app.TimePickerDialog;
 import android.app.TimePickerDialog.OnTimeSetListener;
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
@@ -17,10 +11,7 @@ import android.graphics.drawable.Drawable;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.Parcel;
-import android.os.Parcelable;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
@@ -42,22 +33,21 @@ import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.List;
 import java.util.Locale;
 
 import woverines.sfsuapp.R;
-import woverines.sfsuapp.database.ALERTS_TABLE;
-import woverines.sfsuapp.database.Alerts;
+import woverines.sfsuapp.database.Alert;
 
+/**
+ * Alerts Activity is responsible for enabling users to view and edit a single alert.
+ *
+ * @author Gary Ng
+ */
 public class AlertsActivity extends AppCompatActivity implements OnItemSelectedListener {
 
     public static final String EXTRA_COURSE_ID = "course_id";
     public static final String EXTRA_ALERT = "alert";
     public static final int REQUEST_CODE_RINGTONE = 1;
-
-    public static final long MINUTE_MS = 60000L;
-    public static final long DAY_MS = 86400000L;
-    public static final long WEEK_MS = 7 * DAY_MS;
 
     private static final SimpleDateFormat DATE_FORMAT =
         new SimpleDateFormat("EEE, MMMM d, yyyy", Locale.getDefault());
@@ -156,6 +146,10 @@ public class AlertsActivity extends AppCompatActivity implements OnItemSelectedL
         initialize();
     }
 
+    /**
+     * Initializes the current view if an alert was passed in otherwise create an empty alert for
+     * creation.
+     */
     private void initialize() {
         Intent intent = getIntent();
         if (intent != null) {
@@ -169,6 +163,7 @@ public class AlertsActivity extends AppCompatActivity implements OnItemSelectedL
 
         if (alert == null) {
             alert = new Alert();
+            alert.courseId = courseId;
         }
 
         text.setText(alert.alertText);
@@ -239,6 +234,10 @@ public class AlertsActivity extends AppCompatActivity implements OnItemSelectedL
         return super.onOptionsItemSelected(item);
     }
 
+    /**
+     * Takes the alert created, creates the alarm on the device, then saves it into the database.
+     * The alert created will be returned once the the activity ends.
+     */
     public void onSave() {
         if (alert.alertText == null || alert.alertText.isEmpty()) {
             Toast.makeText(this, R.string.alert_text_required, Toast.LENGTH_LONG).show();
@@ -248,9 +247,9 @@ public class AlertsActivity extends AppCompatActivity implements OnItemSelectedL
         AlertHelper.createAlarm(this, alert);
 
         if (alert.id > 0) {
-            AlertHelper.updateAlarmDatabase(this, courseId, alert);
+            AlertHelper.updateAlarmDatabase(this, alert);
         } else {
-            alert.id = AlertHelper.createAlarmDatabase(this, courseId, alert);
+            alert.id = AlertHelper.createAlarmDatabase(this, alert);
         }
 
         Intent intent = new Intent();
@@ -261,14 +260,27 @@ public class AlertsActivity extends AppCompatActivity implements OnItemSelectedL
         finish();
     }
 
+    /**
+     * Deletes the currently viewed alert from the database.
+     */
     public void onDelete() {
         if (alert.id > 0) {
             AlertHelper.removeAlarmDatabase(this, alert.id);
         }
 
+        Intent intent = new Intent();
+        intent.putExtra(EXTRA_COURSE_ID, courseId);
+        intent.putExtra(EXTRA_ALERT, alert);
+
+        setResult(RESULT_OK, intent);
         finish();
     }
 
+    /**
+     * Used whenever the date option is selected by the user.
+     *
+     * @param milliseconds time defined by this alert
+     */
     public void onDateClick(long milliseconds) {
         final Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(milliseconds);
@@ -290,6 +302,11 @@ public class AlertsActivity extends AppCompatActivity implements OnItemSelectedL
         dialog.show();
     }
 
+    /**
+     * Used whenever the time option is selected by the user.
+     *
+     * @param milliseconds time defined by this alert
+     */
     public void onTimeClick(long milliseconds) {
         final Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(milliseconds);
@@ -322,6 +339,9 @@ public class AlertsActivity extends AppCompatActivity implements OnItemSelectedL
         alert.reminder = -1;
     }
 
+    /**
+     * Displays the Android sound picker.
+     */
     public void onAlertSoundClick() {
         Intent intent = new Intent(RingtoneManager.ACTION_RINGTONE_PICKER);
         intent.putExtra(RingtoneManager.EXTRA_RINGTONE_TYPE, RingtoneManager.TYPE_NOTIFICATION);
@@ -331,6 +351,12 @@ public class AlertsActivity extends AppCompatActivity implements OnItemSelectedL
         startActivityForResult(intent, REQUEST_CODE_RINGTONE);
     }
 
+    /**
+     * Handles the sound returned from the Android sound picker.
+     *
+     * @param resultCode result code
+     * @param data contains the sound
+     */
     public void handleAlertSound(int resultCode, Intent data) {
         if (resultCode == RESULT_OK) {
             Uri uri = data.getParcelableExtra(RingtoneManager.EXTRA_RINGTONE_PICKED_URI);
@@ -340,190 +366,6 @@ public class AlertsActivity extends AppCompatActivity implements OnItemSelectedL
                 Ringtone ringtone = RingtoneManager.getRingtone(this, uri);
                 alertSound.setText(ringtone.getTitle(this));
             }
-        }
-    }
-
-    public static class Alert implements Parcelable {
-
-        public long id;
-        public String alertText;
-        public long time;
-        public int reminder; // Minutes
-        public Uri sound;
-        public boolean vibrate;
-        public boolean repeat;
-
-        public Alert() {
-            time = System.currentTimeMillis();
-        }
-
-        public Alert(Alerts alert) {
-            id = alert.getAlertID();
-            alertText = alert.getText();
-            time = alert.getmTime();
-            reminder = alert.getmReminder();
-            sound = alert.getmSound() != null ? Uri.parse(alert.getmSound()) : null;
-            vibrate = alert.getmVibrate() > 0;
-            repeat = alert.getmReapeat() > 0;
-        }
-
-        protected Alert(Parcel in) {
-            id = in.readLong();
-            alertText = in.readString();
-            time = in.readLong();
-            reminder = in.readInt();
-            sound = in.readParcelable(Uri.class.getClassLoader());
-            vibrate = in.readByte() != 0;
-            repeat = in.readByte() != 0;
-        }
-
-        public static final Creator<Alert> CREATOR = new Creator<Alert>() {
-            @Override
-            public Alert createFromParcel(Parcel in) {
-                return new Alert(in);
-            }
-
-            @Override
-            public Alert[] newArray(int size) {
-                return new Alert[size];
-            }
-        };
-
-        @Override
-        public int describeContents() {
-            return 0;
-        }
-
-        @Override
-        public void writeToParcel(Parcel dest, int flags) {
-            dest.writeLong(id);
-            dest.writeString(alertText);
-            dest.writeLong(time);
-            dest.writeInt(reminder);
-            dest.writeParcelable(sound, flags);
-            dest.writeByte((byte) (vibrate ? 1 : 0));
-            dest.writeByte((byte) (repeat ? 1 : 0));
-        }
-    }
-
-    public static class AlertNotificationReceiver extends BroadcastReceiver {
-
-        public static final String EXTRA_NOTIFICATION = "notification";
-        public static final String EXTRA_NOTIFICATION_ID = "notification_id";
-
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            String action = intent.getAction();
-
-            if (action != null && action.equals("android.intent.action.BOOT_COMPLETED")) {
-                List<Alerts> alerts = ALERTS_TABLE.getAlerts(context, System.currentTimeMillis());
-
-                for (Alerts alert : alerts) {
-                    AlertHelper.createAlarm(context, new Alert(alert));
-                }
-            } else {
-                Notification notification = intent.getParcelableExtra(EXTRA_NOTIFICATION);
-                if (notification == null) {
-                    return;
-                }
-
-                int id = intent.getIntExtra(EXTRA_NOTIFICATION_ID, 0);
-
-                NotificationManager manager =
-                    (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
-                manager.notify(id, notification);
-
-                ALERTS_TABLE.checkRepeats(context);
-            }
-        }
-    }
-
-    public static class AlertHelper {
-
-        private AlertHelper() {}
-
-        public static void createAlarm(Context context, Alert alert) {
-            long time = alert.time - (alert.reminder * MINUTE_MS);
-            boolean repeat = alert.repeat;
-            long interval = WEEK_MS;
-
-            AlarmManager manager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-
-            Intent intent = new Intent(context, AlertNotificationReceiver.class);
-            intent.putExtra(AlertNotificationReceiver.EXTRA_NOTIFICATION,
-                createNotification(context, alert));
-
-            PendingIntent alarmIntent = PendingIntent.getBroadcast(context, 0, intent,
-                PendingIntent.FLAG_UPDATE_CURRENT);
-
-            if (repeat) {
-                manager.setExact(AlarmManager.RTC_WAKEUP, time, alarmIntent);
-            } else {
-                manager.setRepeating(AlarmManager.RTC_WAKEUP, time, interval, alarmIntent);
-            }
-        }
-
-        private static long createAlarmDatabase(Context context, int courseId, Alert alert) {
-            Alerts instance = new Alerts(
-                alert.id,
-                courseId,
-                alert.time,
-                alert.alertText,
-                alert.reminder,
-                alert.sound != null ? alert.sound.toString() : null,
-                alert.vibrate ? 1 : 0,
-                alert.repeat ? 1 : 0
-            );
-
-            return ALERTS_TABLE.createAlert(context, instance);
-        }
-
-        private static int updateAlarmDatabase(Context context, int courseId, Alert alert) {
-            Alerts instance = new Alerts(
-                alert.id,
-                courseId,
-                alert.time,
-                alert.alertText,
-                alert.reminder,
-                alert.sound != null ? alert.sound.toString() : null,
-                alert.vibrate ? 1 : 0,
-                alert.repeat ? 1 : 0
-            );
-
-            return ALERTS_TABLE.updateAlert(context, instance);
-        }
-
-        private static int removeAlarmDatabase(Context context, long alertId) {
-            return ALERTS_TABLE.removeAlert(context, alertId);
-        }
-
-        public static Notification createNotification(Context context, Alert alert) {
-            Notification.Builder builder = new Notification.Builder(context);
-            builder.setSmallIcon(R.mipmap.ic_launcher);
-            builder.setContentTitle(alert.alertText);
-
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                builder.setColor(context.getResources().getColor(R.color.colorPrimary));
-            }
-
-            if (alert.vibrate) {
-                builder.setDefaults(Notification.DEFAULT_VIBRATE);
-            }
-
-            Calendar calendar = Calendar.getInstance();
-            calendar.setTimeInMillis(alert.time);
-
-            builder.setContentText(TIME_FORMAT.format(calendar.getTime()));
-
-            Notification notification = builder.build();
-            if (alert.sound == null) {
-                notification.sound =
-                    RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-            } else {
-                notification.sound = alert.sound;
-            }
-
-            return notification;
         }
     }
 }

@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/catalog_content_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -13,49 +14,54 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
         android:layout_marginStart="@dimen/activity_horizontal_margin"
         android:layout_marginTop="@dimen/activity_vertical_margin"
-        android:layout_marginBottom="8dp"
-        android:orientation="horizontal"
         android:descendantFocusability="beforeDescendants"
-        android:focusableInTouchMode="true" >
+        android:focusableInTouchMode="true"
+        android:orientation="horizontal">
 
         <AutoCompleteTextView
             android:id="@+id/department_input"
             android:layout_width="0dp"
-            android:layout_height="32dp"
-            android:layout_marginRight="8dp"
+            android:layout_height="40dp"
             android:layout_weight="1"
-            android:completionThreshold="1"
             android:background="@drawable/input"
-            android:hint="Department..."
+            android:completionThreshold="1"
+            android:hint="Select a department..."
             android:padding="8dp"
-            android:textSize="14sp" />
+            android:textSize="14sp"
+            android:singleLine="true"
+            android:imeOptions="actionSearch"/>
 
-        <!--<AutoCompleteTextView-->
-            <!--android:id="@+id/course_number_input"-->
-            <!--android:layout_width="0dp"-->
-            <!--android:layout_height="32dp"-->
-            <!--android:layout_weight="1"-->
-            <!--android:background="@drawable/input"-->
-            <!--android:hint="Course number..."-->
-            <!--android:padding="8dp"-->
-            <!--android:textSize="14sp" />-->
-
-        <ImageView
+        <Button style="@style/Base.Widget.AppCompat.Button.Borderless.Colored"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:src="@drawable/ic_forward_24dp"
-            android:onClick="filterCourses"/>
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:onClick="filterCourses"
+            android:text="Search" />
+
     </LinearLayout>
 
     <!--course list-->
+    <TextView
+        android:id="@+id/catalog_empty_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="64dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:textSize="16sp"
+        android:text="To see a department's courses, start typing the department's name in the text box then choose from the drop down list" />
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/catalog_course_list"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:paddingStart="@dimen/activity_horizontal_margin"
-        android:paddingEnd="@dimen/activity_horizontal_margin"
+        android:layout_weight="1"
         android:background="@android:color/white"
-        android:layout_weight="1" />
+        android:paddingEnd="@dimen/activity_horizontal_margin"
+        android:paddingStart="@dimen/activity_horizontal_margin" />
+
 </LinearLayout>

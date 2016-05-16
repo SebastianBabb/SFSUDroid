@@ -7,11 +7,13 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -25,6 +27,7 @@ import woverines.sfsuapp.R;
 import woverines.sfsuapp.api.API_RequestBuilder;
 import woverines.sfsuapp.api.Callback;
 import woverines.sfsuapp.api.HttpRequestorManager;
+import woverines.sfsuapp.database.COURSE_TABLE;
 import woverines.sfsuapp.database.Course;
 import woverines.sfsuapp.models.CoursesModels;
 import woverines.sfsuapp.models.DepartmentsModel;
@@ -37,18 +40,24 @@ public class ClassCatalog extends AppCompatActivity implements ClassCatalogAdapt
     private List<Course> courseList;
     private ClassCatalogAdapter adapter;
     private RecyclerView courseListView;
-    private TextView departmentInput;
-    private TextView courseNumberInput;
+    private AutoCompleteTextView departmentInput;
     private Dialog courseDetailDialog;
     private TextView detailNumberTV;
     private TextView detailNameTV;
     private TextView detailInstructorTV;
+    private TextView detailDayTV;
     private TextView detailTimeTV;
     private TextView detailDescriptionTV;
+    private Button detailCancelB;
+    private Button detailAddEventB;
+    private LinearLayout catalogContentLayout;
+    private TextView emptyView;
 
     private API_RequestBuilder api_requestBuilder;
     private DepartmentsModel departments;
     private CoursesModels courses;
+    private List<Course> myCourseList;
+    private Course selectedCourse = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,51 +71,67 @@ public class ClassCatalog extends AppCompatActivity implements ClassCatalogAdapt
 //        setDemoDepartmentMap();
         setDepartmentMap();
         courseList = new ArrayList<>();
+        myCourseList = COURSE_TABLE.getCourses(this, "1");
         adapter = new ClassCatalogAdapter(this, courseList);
         courseListView = (RecyclerView) findViewById(R.id.catalog_course_list);
         courseListView.setLayoutManager(new LinearLayoutManager(this));
         courseListView.setAdapter(adapter);
         departmentInput = (AutoCompleteTextView) findViewById(R.id.department_input);
 
+        catalogContentLayout = (LinearLayout) findViewById(R.id.catalog_content_layout);
+        emptyView = (TextView) findViewById(R.id.catalog_empty_view);
+//        if (courseList.isEmpty()) {
+//            catalogContentLayout.removeView(courseListView);
+//        } else {
+//            catalogContentLayout.removeView(emptyView);
+//        }
+
+        if (!courseList.isEmpty()) {
+            catalogContentLayout.removeView(emptyView);
+        }
+
         courseDetailDialog = new Dialog(this);
-        courseDetailDialog.setContentView(R.layout.catalog_details_dialog_new);
+        courseDetailDialog.setContentView(R.layout.dialog_class_catalog);
         courseDetailDialog.setTitle("Course Options");
         //connecting TextViews to dialog
         detailNumberTV = (TextView) courseDetailDialog.findViewById(R.id.dialog_course_number);
         detailNameTV = (TextView) courseDetailDialog.findViewById(R.id.dialog_course_title);
         detailInstructorTV = (TextView) courseDetailDialog.findViewById(R.id.dialog_course_instructor);
         detailTimeTV = (TextView) courseDetailDialog.findViewById(R.id.dialog_meet_time);
+        detailDayTV = (TextView) courseDetailDialog.findViewById(R.id.dialog_meet_days);
         detailDescriptionTV = (TextView) courseDetailDialog.findViewById(R.id.dialog_course_description);
         //connecting Buttons to dialog
-        Button detailCancelB = (Button) courseDetailDialog.findViewById(R.id.dialog_cancel_button);
+        detailCancelB = (Button) courseDetailDialog.findViewById(R.id.dialog_cancel_button);
         detailCancelB.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 courseDetailDialog.dismiss();
             }
         });
-        Button detailAddEventB = (Button) courseDetailDialog.findViewById(R.id.dialog_add_class);
+        detailAddEventB = (Button) courseDetailDialog.findViewById(R.id.dialog_add_class);
         detailAddEventB.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //TODO: add course to schedule
-                Toast toast = Toast.makeText(getApplicationContext(), "*Class added (not functional)", Toast.LENGTH_LONG);
-                toast.show();
+                addSelectedCourse();
+                courseDetailDialog.dismiss();
             }
         });
 
-        final AutoCompleteTextView departmentInput = (AutoCompleteTextView) findViewById(R.id.department_input);
-//        departmentList = new ArrayList<>(departmentMap.keySet());
+        departmentInput = (AutoCompleteTextView) findViewById(R.id.department_input);
 
-//        Collections.sort(departmentList);
         ArrayAdapter<String> departmentAdapter = new ArrayAdapter<String>(this, R.layout.department_autocomplete_popup_item, departmentList);
         departmentInput.setAdapter(departmentAdapter);
-        departmentInput.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+        departmentInput.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onFocusChange(View view, boolean hasFocus) {
-                if (hasFocus) {
-                    departmentInput.showDropDown();
-                }
+            public void onClick(View view) {
+                departmentInput.showDropDown();
+            }
+        });
+        departmentInput.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
+                filterCourses(textView);
+                return true;
             }
         });
 
@@ -116,10 +141,49 @@ public class ClassCatalog extends AppCompatActivity implements ClassCatalogAdapt
         this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
     }
 
-    private void setCourseListFromCoursesModels(CoursesModels models, String department) {
+    private void addSelectedCourse() {
+        if (selectedCourse == null) {
+            return;
+        }
+        COURSE_TABLE.addCourse(this, selectedCourse);
+        myCourseList.add(selectedCourse);
+        selectedCourse = null;
+        Toast.makeText(this, "Course added to schedule", Toast.LENGTH_SHORT).show();
+    }
+
+    private void setCourseListFromCoursesModels(CoursesModels models) {
         courseList.clear();
         for (CoursesModels.Course apiCourse : models.classes) {
-            Course course = new Course(0, department, apiCourse.course_number+"", "", apiCourse.course_description, "", "", "", "", "");
+            String[] dayTimeArray= apiCourse.course_time.split("\r");
+            String courseDays = "", courseTime = "";
+            for (int i=0; i<dayTimeArray.length; i++) {
+                int firstSpaceIndex = dayTimeArray[i].indexOf(' ');
+                if (firstSpaceIndex > 0) {
+                    courseDays += dayTimeArray[i].substring(0, firstSpaceIndex);
+                    courseTime += dayTimeArray[i].substring(firstSpaceIndex+1);
+                    if (i < dayTimeArray.length-1) {
+                        courseDays += "\n";
+                        courseTime += "\n";
+                    }
+                } else {
+                    courseTime += dayTimeArray[i];
+                }
+            }
+
+            String instructor = "";
+            if (apiCourse.teacher_first_name != null) {
+                instructor += apiCourse.teacher_first_name;
+            }
+            if (apiCourse.teacher_last_name != null) {
+                if (!instructor.isEmpty()) {
+                    instructor += " ";
+                }
+                instructor += apiCourse.teacher_last_name;
+            }
+
+            instructor = instructor.replace("\r", "\n");
+            Course course = new Course(0, apiCourse.course_subject, apiCourse.course_number+"", apiCourse.section_number,
+                    apiCourse.course_name, courseDays, courseTime, "", instructor, apiCourse.course_description);
             courseList.add(course);
         }
     }
@@ -131,6 +195,7 @@ public class ClassCatalog extends AppCompatActivity implements ClassCatalogAdapt
         }
         if (!departmentList.contains(selectedDepartment)) {
             Toast.makeText(this, "Not a valid department. Please check your selection.", Toast.LENGTH_LONG).show();
+            return;
         }
 //        String selectedCourseNumber = courseNumberInput.getText().toString();
 
@@ -140,13 +205,21 @@ public class ClassCatalog extends AppCompatActivity implements ClassCatalogAdapt
             @Override
             public void response(Object object) {
                 courses  = (CoursesModels) object;
-                setCourseListFromCoursesModels((CoursesModels) object, departmentCode);
-                adapter.notifyDataSetChanged();
+                Collections.sort(courses.classes);
+                setCourseListFromCoursesModels((CoursesModels) object);
+                if (courseList.isEmpty()) {
+                    Toast.makeText(ClassCatalog.this, "No courses found for " + selectedDepartment, Toast.LENGTH_SHORT).show();
+                } else {
+                    catalogContentLayout.removeView(emptyView);
+                    adapter.notifyDataSetChanged();
+                    Toast.makeText(ClassCatalog.this, "Courses retrieved from server", Toast.LENGTH_SHORT).show();
+                }
+
             }
 
             @Override
             public void error(NULLOBJ nullObj) {
-
+                Toast.makeText(ClassCatalog.this, "Server error. Please try again", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -194,7 +267,7 @@ public class ClassCatalog extends AppCompatActivity implements ClassCatalogAdapt
 
     private void setDepartmentMap() {
         String[] departments  = new String[] {
-                "Asian American Studies", "AA S",
+                "Asian American Studies", "AA%20S",
                 "Accounting", "ACCT",
                 "Apparel Design and Merchandising ", "ADM",
                 "Africana Studies", "AFRS",
@@ -205,17 +278,17 @@ public class ClassCatalog extends AppCompatActivity implements ClassCatalogAdapt
                 "Art", "ART",
                 "Astronomy", "ASTR",
                 "Athletics", "ATHL",
-                "All University", "A U",
+                "All University", "A%20U",
                 "Broadcast and Electronic Communication Arts", "BECA",
                 "Biology", "BIOL",
                 "Business", "BUS",
                 "Child and Adolescent Development ", "CAD",
-                "Communicative Disorders", "C D",
+                "Communicative Disorders", "C%20D",
                 "Consumer and Family Studies", "CFS",
                 "Chemistry", "CHEM",
                 "Chinese", "CHIN",
                 "Cinema", "CINE",
-                "Criminal Justice", "C J",
+                "Criminal Justice", "C%20J",
                 "Classical Archeology", "CLAR",
                 "Classics", "CLAS",
                 "Clinical Laboratory Science", "CLS",
@@ -223,7 +296,7 @@ public class ClassCatalog extends AppCompatActivity implements ClassCatalogAdapt
                 "Counseling", "COUN",
                 "Computer Science", "CSC",
                 "Critical Social Thought", "CST",
-                "Creative Writing", "C W",
+                "Creative Writing", "C%20W",
                 "Comparative and World Literature", "CWL",
                 "Design and Industry", "DAI",
                 "Dance", "DANC",
@@ -233,13 +306,13 @@ public class ClassCatalog extends AppCompatActivity implements ClassCatalogAdapt
                 "Educational Administration", "EDAD",
                 "Educational Leadership", "EDDL",
                 "Education", "EDUC",
-                "Elementary Education", "E ED",
+                "Elementary Education", "E%20ED",
                 "Engineering", "ENGR",
                 "Environmental Studies", "ENVS",
                 "Earth Sciences", "ERTH",
                 "Ethnic Studies", "ETHS",
                 "Finance", "FIN",
-                "Foreign Language", "F L",
+                "Foreign Language", "F%20L",
                 "French", "FR",
                 "Geography", "GEOG",
                 "German", "GER",
@@ -247,7 +320,7 @@ public class ClassCatalog extends AppCompatActivity implements ClassCatalogAdapt
                 "Greek", "GRE",
                 "Gerontology", "GRN",
                 "Hebrew", "HEBR",
-                "Health Education", "H ED",
+                "Health Education", "H%20ED",
                 "Holistic Health", "HH",
                 "History", "HIST",
                 "Health and Social Sciences", "HSS",
@@ -255,7 +328,7 @@ public class ClassCatalog extends AppCompatActivity implements ClassCatalogAdapt
                 "Humanities", "HUM",
                 "International Business", "IBUS",
                 "Interior Design", "ID",
-                "International Relations", "I R",
+                "International Relations", "I%20R",
                 "Interdisciplinary Studies in Education", "ISED",
                 "Information Systems", "ISYS",
                 "Italian", "ITAL",
@@ -274,11 +347,11 @@ public class ClassCatalog extends AppCompatActivity implements ClassCatalogAdapt
                 "Management", "MGMT",
                 "Modern Greek Studies", "MGS",
                 "Marketing", "MKTG",
-                "Museum Studies", "M S",
+                "Museum Studies", "M%20S",
                 "Marine Science", "MSCI",
                 "Music", "MUS",
                 "Nursing", "NURS",
-                "Public Administration", "P A",
+                "Public Administration", "P%20A",
                 "Philosophy", "PHIL",
                 "Physics", "PHYS",
                 "Political Science", "PLSI",
@@ -290,13 +363,13 @@ public class ClassCatalog extends AppCompatActivity implements ClassCatalogAdapt
                 "Race and Resistance Studies", "RRS",
                 "Russian", "RUSS",
                 "Science", "SCI",
-                "Secondary Education", "S ED",
+                "Secondary Education", "S%20ED",
                 "Sociology", "SOC",
                 "Spanish", "SPAN",
                 "Special Education", "SPED",
-                "Social Work", "S W",
+                "Social Work", "S%20W",
                 "Sexuality Studies", "SXS",
-                "Theatre Arts", "TH A",
+                "Theatre Arts", "TH%20A",
                 "Technical and Professional Writing", "TPW",
                 "Urban Studies and Planning", "USP",
                 "Women and Gender Studies", "WGS"
@@ -311,17 +384,41 @@ public class ClassCatalog extends AppCompatActivity implements ClassCatalogAdapt
 
     @Override
     public void onCatalogItemClicked(int position) {
-        Course course = courseList.get(position);
-        String numberString = "<b>" + course.getDepartment() + " " + course.getNumber() + "</b>";
-        String titleString =  course.getName();
-        String timeString = "<b>Time:</b> " + course.getMeetTime();
-        String instructorString = "<b>Instructor:</b> " + course.getInstructor();
-        String descriptionString = "<b>Description:</b> " + course.getDescription();
+        selectedCourse = courseList.get(position);
+        String numberString = selectedCourse.getDepartment() + " " + selectedCourse.getNumber();
+        if (selectedCourse.getSection() != null && !selectedCourse.getSection().isEmpty()) {
+            numberString += "." + selectedCourse.getSection();
+        }
+        String titleString =  selectedCourse.getName();
+        String dayString = selectedCourse.getMeetDays().replace("\n", "<br>");
+        String timeString = selectedCourse.getMeetTime().replace("\n", "<br>");
+        String instructorString = "<b>Instructor: </b>" + (selectedCourse.getInstructor()==null ? "" : selectedCourse.getInstructor().replace("\n", "<br>"));
+        String descriptionString = "<b>Description: </b>" + (selectedCourse.getDescription()==null ? "" : selectedCourse.getDescription());
         detailNumberTV.setText(Html.fromHtml(numberString));
         detailNameTV.setText(Html.fromHtml(titleString));
         detailInstructorTV.setText(Html.fromHtml(instructorString));
+        detailDayTV.setText(Html.fromHtml(dayString));
         detailTimeTV.setText(Html.fromHtml(timeString));
         detailDescriptionTV.setText(Html.fromHtml(descriptionString));
+        if (isInMyCourseList (selectedCourse, myCourseList)) {
+            detailAddEventB.setEnabled(false);
+        } else {
+            detailAddEventB.setEnabled(true);
+        }
         courseDetailDialog.show();
+    }
+
+    private boolean isInMyCourseList (Course course, List<Course> myCourseList) {
+        boolean isInList = true;
+        for (Course listCourse : myCourseList) {
+            if (stringEqual(course.getDepartment(), listCourse.getDepartment()) && stringEqual(course.getNumber(), listCourse.getNumber()) && stringEqual(course.getSection(), listCourse.getSection())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean stringEqual (String a, String b) {
+        return (a==null && b==null) || (a!=null && b!=null && a.equals(b));
     }
 }
