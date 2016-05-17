@@ -23,6 +23,7 @@ import woverines.sfsuapp.R;
 import woverines.sfsuapp.activity.StaffDirectoryAdapter.StaffDirectoryListener;
 import woverines.sfsuapp.api.API_RequestBuilder;
 import woverines.sfsuapp.api.Callback;
+import woverines.sfsuapp.api.HttpRequestorManager;
 import woverines.sfsuapp.database.Staff;
 import woverines.sfsuapp.models.CoursesModels;
 import woverines.sfsuapp.models.NULLOBJ;
@@ -78,7 +79,6 @@ public class StaffDirectory extends AppCompatActivity implements OnItemSelectedL
     @Override
     public void onItemSelected(AdapterView parent, View view, int position, long id) {
         String department = departmentMap.get(departments.get(position));
-//        department = departments.get(position);
         select(department);
     }
 
@@ -221,48 +221,18 @@ public class StaffDirectory extends AppCompatActivity implements OnItemSelectedL
 
         progress.setVisibility(View.VISIBLE);
 
+        HttpRequestorManager.initialize(this);
         API_RequestBuilder builder = new API_RequestBuilder();
-//        builder.populateModel(department, new Professors(), new Callback() {
-//            @Override
-//            public void response(Object object) {
-//                Professors professors  = (Professors) object;
-//
-//                for (String professor : professors.professors) {
-//                    int random = (int) (Math.random() * 10000);
-//                    directory.add(new Staff(professor, "(555) 555-" + random, "name" + random + "@sfsu.edu"));
-//                }
-//
-//                refresh();
-//            }
-//
-//            @Override
-//            public void error(NULLOBJ nullObj) {
-//                refresh();
-//            }
-//        });
-        builder.populateModel(department, new CoursesModels(), new Callback() {
+        builder.populateModel(department, new Professors(), new Callback() {
             @Override
             public void response(Object object) {
-                CoursesModels model  = (CoursesModels) object;
+                Professors professors  = (Professors) object;
 
-                List<String> professors = new ArrayList<>();
-
-                for (CoursesModels.Course course : model.classes) {
-                    String name = course.teacher_first_name;
-                    if (course.teacher_last_name != null) {
-                        name += " " + course.teacher_last_name;
-                    }
-
-                    if (!professors.contains(name)) {
-                        professors.add(name);
-                    }
+                if (!professors.professors.isEmpty()) {
+                    Collections.sort(professors.professors);
                 }
 
-                if (!professors.isEmpty()) {
-                    Collections.sort(professors);
-                }
-
-                for (String professor : professors) {
+                for (String professor : professors.professors) {
                     int random = (int) (Math.random() * 10000);
                     String name = professor.replace(" ", "").toLowerCase();
                     directory.add(new Staff(
@@ -280,6 +250,46 @@ public class StaffDirectory extends AppCompatActivity implements OnItemSelectedL
                 refresh();
             }
         });
+//        builder.populateModel(department, new CoursesModels(), new Callback() {
+//            @Override
+//            public void response(Object object) {
+//                CoursesModels model  = (CoursesModels) object;
+//
+//                List<String> professors = new ArrayList<>();
+//
+//                for (CoursesModels.Course course : model.classes) {
+//                    String name = course.teacher_first_name;
+//                    if (course.teacher_last_name != null) {
+//                        name += " " + course.teacher_last_name;
+//                    }
+//
+//                    if (!professors.contains(name)) {
+//                        professors.add(name);
+//                    }
+//                }
+//
+//                if (!professors.isEmpty()) {
+//                    Collections.sort(professors);
+//                }
+//
+//                for (String professor : professors) {
+//                    int random = (int) (Math.random() * 10000);
+//                    String name = professor.replace(" ", "").toLowerCase();
+//                    directory.add(new Staff(
+//                        professor,
+//                        "(555) 555-" + String.format("%4d", random).replace(" ", "0"),
+//                        name + "@sfsu.edu"
+//                    ));
+//                }
+//
+//                refresh();
+//            }
+//
+//            @Override
+//            public void error(NULLOBJ nullObj) {
+//                refresh();
+//            }
+//        });
     }
 
     /**
