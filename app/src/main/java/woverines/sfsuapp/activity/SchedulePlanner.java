@@ -17,6 +17,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -54,6 +55,9 @@ public class SchedulePlanner extends AppCompatActivity {
     TextView detailMeetDaysTV;
     Button detailCancelB;
     Button detailAddEventB;
+    ImageButton detailDeleteCourseIB;
+
+    private ImageButton refreshCourses;
 
     private ViewGroup detailAlerts;
 
@@ -89,6 +93,7 @@ public class SchedulePlanner extends AppCompatActivity {
         detailAlerts = (ViewGroup) courseDetailDialog.findViewById(R.id.listView);
         detailCancelB = (Button) courseDetailDialog.findViewById(R.id.dialog_cancel_button);
         detailAddEventB = (Button) courseDetailDialog.findViewById(R.id.dialog_add_event);
+        detailDeleteCourseIB = (ImageButton) courseDetailDialog.findViewById(R.id.delete_course_ib);
 
         ImageButton add_class_ib = (ImageButton) findViewById(R.id.add_course_ib);
         add_class_ib.setOnClickListener(new View.OnClickListener() {
@@ -99,32 +104,28 @@ public class SchedulePlanner extends AppCompatActivity {
         });
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        Button resetDB = (Button) findViewById(R.id.reset_db_button);
+        refreshCourses = (ImageButton) findViewById(R.id.refresh_courses_ib);
 
-        resetDB.setOnClickListener(new View.OnClickListener() {
+        refreshCourses.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                COURSE_TABLE.resetTable(getApplicationContext());
-                courseArrayList.clear();
-                scheduleAdapter.notifyDataSetChanged();
+                getCourses();
+                displaySchedule();
             }
         });
 
-//        add_class_ib = (Button) findViewById(R.id.)
-
-//        Course test1 = new Course(2372, "CSC", "413", "02", "Software Development", "M, W, F", "12:10PM - 1:00PM", "Thornton Hall 329", "Marc Sosnick", "Prerequisites: CSC 340 and CSC 412 with grades of C or better. \n" + "Modern software applications. Object-oriented techniques: encapsulation, inheritance, and poly-morphism as mechanism for data design and problem solution. Software design, debugging, testing, and UI design. Software maintenance. Software development tools. Extra fee required. (Plus-minus letter grade only)");
-//        Course test2 = new Course(2378, "CSC", "667", "01", "Internet Application Design and Development", "M", "7:00PM - 9:45PM", "Thornton Hall 210", "John Roberts", "Prerequisite: CSC 413 with grade of C or better or consent of instructor.\n" +  "Fundamental technologies on which WWW is based. Extra fee required.\n" +
-//                                         "(CSC 667/CSC 867 is a paired course offering. Students who complete the course at one level may not repeat the course at the other level.)");
-//
-//        addCourseToPlanner(test1);
-//        addCourseToPlanner(test2);
 
 
         getCourses();
         displaySchedule();
 
-
      }
+
+//    @Override
+//    protected void onResume() {
+//        super.onResume();
+//        scheduleAdapter.notifyDataSetChanged();
+//    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -147,8 +148,9 @@ public class SchedulePlanner extends AppCompatActivity {
      */
     private void getCourses() {
         //we can add filtering for courses for today... ect here
-
+//        courseArrayList.clear();
         courseArrayList = COURSE_TABLE.getCourses(this, "1");
+//        scheduleAdapter.notifyDataSetChanged();
 //        courseArrayList.add(new Course(2361, "TEST_TEST", "256", "03", "Machine Structure", "Th", "4:10PM - 6:55PM", "Science Building 101", "Tsun-Yuk Hsu", "Prerequisite: CSC 230 or CSC 330 with grade of C or better. Digital logic circuits; data representation; assembly language programming; subroutine linkage; machine language encoding; interrupt/exception handling; memory system concepts; CPU organization and performance."));
 
     }
@@ -210,6 +212,7 @@ public class SchedulePlanner extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
                 Course course = courseArrayList.get(position);
+                final String name = course.getName();
                 //setting up courseDetailsDialog
                 String numberText = course.getDepartment() + " " + course.getNumber();
                 if (course.getSection() != null && !course.getSection().isEmpty()) {
@@ -240,12 +243,44 @@ public class SchedulePlanner extends AppCompatActivity {
                         courseDetailDialog.dismiss();
                     }
                 });
+
+                detailDeleteCourseIB.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        deleteCourseByName(name);
+                        getCourses();
+                        displaySchedule();
+                        Toast.makeText(getApplicationContext(), "Course deleted from schedule", Toast.LENGTH_SHORT).show();
+
+                        courseDetailDialog.dismiss();
+                        displaySchedule();
+                    }
+                });
                 //dialog has been prepared, display it.
                 courseDetailDialog.show();
             }
 
         });
     }
+
+    /**
+     *
+     * @param name
+     */
+    public void deleteCourseByName(String name){
+        COURSE_TABLE.deleteCourse(getApplicationContext(), name);
+//        refreshCourseList();
+    }
+
+    /**
+     *
+     */
+    public void refreshCourseList(){
+        courseArrayList.clear();
+        getCourses();
+        scheduleAdapter.notifyDataSetChanged();
+    }
+
 
     public void refreshAlerts(int courseId) {
         detailAlerts.removeAllViews();
