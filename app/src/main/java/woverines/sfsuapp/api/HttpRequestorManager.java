@@ -68,12 +68,17 @@ public class HttpRequestorManager {
                         } else if(flag == "professors"){
                             Professors data = new Gson().fromJson(response.toString(), Professors.class);
                             callback.response(data);
+                        } else if(flag == "twitter"){
+                            Log.i("TWITTER", response.toString());
                         }
                     }
                 }, new Response.ErrorListener() {
 
                     @Override
                     public void onErrorResponse(VolleyError error) {
+                        if(flag == "twitter"){
+                            Log.i("TWITTER", "IT FAILED");
+                        }
                         callback.error(new NULLOBJ());
                     }
                 });
