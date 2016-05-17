@@ -163,17 +163,17 @@ public class ShuttleScheduleFragment extends Fragment{
 
         if (currentTime<firstShuttleTime){
             //Log.d("before shuttle","week");
-            timerDescription.setText("First shuttle in:");
+            timerDescription.setText("First shuttle in ");
             countdown = new Timer(firstShuttleTime - currentTime, 1000);
             countdown.start();
         }else if(currentTime < lastShuttleTime){
             //Log.d("mid shuttle","week");
-            timerDescription.setText("Shuttles run for:");
+            timerDescription.setText("Shuttles run for ");
             countdown = new Timer(lastShuttleTime-currentTime,1000);
             countdown.start();
         }else{
             //Log.d("after Shuttle","week");
-            timerDescription.setText("There are no more shuttles running");
+            timerDescription.setText("Out of service");
         }
     }
 
