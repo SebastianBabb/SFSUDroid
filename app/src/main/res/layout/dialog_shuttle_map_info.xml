@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/colorPrimary"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Daly City BART Express Shuttles"
+        android:id="@+id/textView3"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="28dp" />
+
+    <Button style="@style/Widget.AppCompat.Button.Borderless.Colored"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Close"
+        android:id="@+id/dismiss_map_dialog"
+        android:layout_marginBottom="45dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignEnd="@+id/textView6" />
+
+    <TextView style="@style/Base.TextAppearance.AppCompat.Title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Hours  Monday - Thursday"
+        android:id="@+id/textView6"
+        android:paddingBottom="4dp"
+        android:layout_marginTop="24dp"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/textView3" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingBottom="4dp"
+        android:text="Monday - Thursday: 7:00 a.m. to 10:30 p.m. Last 19th Avenue pick-up at 10:00 p.m. "
+        android:id="@+id/textView7"
+        android:layout_below="@+id/textView6"
+        android:layout_alignStart="@+id/textView3"
+        android:layout_marginStart="22dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Friday: 7:00 a.m. to 7:15 p.m. Last 19th Avenue pick-up at 6:50 p.m."
+        android:id="@+id/textView8"
+        android:layout_below="@+id/textView10"
+        android:layout_alignStart="@+id/textView7" />
+
+    <TextView style="@style/Base.TextAppearance.AppCompat.Title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingBottom="4dp"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Hours  Fridays"
+        android:id="@+id/textView10"
+        android:layout_below="@+id/textView7"
+        android:layout_alignParentStart="true" />
+
+    <TextView style="@style/Base.TextAppearance.AppCompat.Title.Inverse"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Schedule is every 10 to 15 minutes"
+        android:id="@+id/textView11"
+        android:textColor="@color/colorPrimary2"
+        android:layout_below="@+id/textView8"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="19dp" />
+
+    <TextView style="@style/TextAppearance.AppCompat.Subhead"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/colorPrimary2"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Shuttles stops: 19th Ave. and Daly City BART ONLY"
+        android:id="@+id/textView12"
+        android:layout_below="@+id/textView11"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="19dp" />
+</RelativeLayout>

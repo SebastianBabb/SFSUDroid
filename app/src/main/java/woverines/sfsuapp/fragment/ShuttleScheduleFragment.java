@@ -1,5 +1,6 @@
 package woverines.sfsuapp.fragment;
 
+import android.app.Dialog;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.v4.app.Fragment;
@@ -7,6 +8,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -35,6 +37,12 @@ public class ShuttleScheduleFragment extends Fragment{
     private Timer countdown;
     private Calendar c;
 
+    private Dialog mapInfoDialog;
+    private Button showDialog;
+    private Button dismissDialog;
+    private TouchImageView touchMap;
+    public WebView mapWeb;
+
     public ShuttleScheduleFragment() {
     }
 
@@ -60,25 +68,32 @@ public class ShuttleScheduleFragment extends Fragment{
         Bundle args = getArguments();
         final TextView textView = (TextView) rootView.findViewById(R.id.section_label);
 
+        mapWeb = (WebView) rootView.findViewById(R.id.mapWebView);
+//        mapWeb.loadUrl();
+        String data = "<body>" + "<img src=\"sfsumapmed.png\"/></body>";
+        mapWeb.loadDataWithBaseURL("file:///android_asset/", data, "text/html", "utf-8", null);
+
+//        makeNewTimer();
 
         timeButton = (Button) rootView.findViewById(R.id.ShuttleButton);
         timerView = (TextView) rootView.findViewById(R.id.timerText);
         timerDescription = (TextView) rootView.findViewById(R.id.shuttleDescription);
 
-        daySchedule = (TextView) rootView.findViewById(R.id.daySchedule);
+//        daySchedule = (TextView) rootView.findViewById(R.id.daySchedule);
+
 
         c = Calendar.getInstance();
         int day = c.get(Calendar.DAY_OF_WEEK);
-        if(day > 1 && day <6){
-            //Log.d("mon-thu","week");
-            daySchedule.setText(R.string.weekday_schedule);
-        }else if(day == 6){
-            //Log.d("fri","week");
-            daySchedule.setText(R.string.friday_schedule);
-        }else{
-            //Log.d("weekend","week");
-            daySchedule.setText(R.string.whole_schedule);
-        }
+//        if(day > 1 && day <6){
+//            //Log.d("mon-thu","week");
+//            daySchedule.setText(R.string.weekday_schedule);
+//        }else if(day == 6){
+//            //Log.d("fri","week");
+//            daySchedule.setText(R.string.friday_schedule);
+//        }else{
+//            //Log.d("weekend","week");
+//            daySchedule.setText(R.string.whole_schedule);
+//        }
 
 
 
@@ -96,6 +111,26 @@ public class ShuttleScheduleFragment extends Fragment{
             }
         });
 
+        mapInfoDialog = new Dialog(getContext());
+        mapInfoDialog.setContentView(R.layout.dialog_shuttle_map_info);
+        mapInfoDialog.setTitle("Shuttle Map Info");
+
+        dismissDialog = (Button) mapInfoDialog.findViewById(R.id.dismiss_map_dialog);
+        dismissDialog.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mapInfoDialog.dismiss();
+            }
+        });
+
+
+        showDialog = (Button) rootView.findViewById(R.id.show_map_info);
+        showDialog.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mapInfoDialog.show();
+            }
+        });
 
         return rootView;
     }
