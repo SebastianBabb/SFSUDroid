@@ -150,8 +150,6 @@ public class SchedulePlanner extends AppCompatActivity {
         //we can add filtering for courses for today... ect here
 //        courseArrayList.clear();
         courseArrayList = COURSE_TABLE.getCourses(this, "1");
-//        scheduleAdapter.notifyDataSetChanged();
-//        courseArrayList.add(new Course(2361, "TEST_TEST", "256", "03", "Machine Structure", "Th", "4:10PM - 6:55PM", "Science Building 101", "Tsun-Yuk Hsu", "Prerequisite: CSC 230 or CSC 330 with grade of C or better. Digital logic circuits; data representation; assembly language programming; subroutine linkage; machine language encoding; interrupt/exception handling; memory system concepts; CPU organization and performance."));
 
     }
 
@@ -253,7 +251,8 @@ public class SchedulePlanner extends AppCompatActivity {
                         Toast.makeText(getApplicationContext(), "Course deleted from schedule", Toast.LENGTH_SHORT).show();
 
                         courseDetailDialog.dismiss();
-                        displaySchedule();
+                        finish();
+
                     }
                 });
                 //dialog has been prepared, display it.
