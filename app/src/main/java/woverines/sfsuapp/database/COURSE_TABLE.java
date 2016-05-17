@@ -127,6 +127,7 @@ public class COURSE_TABLE {
         return courses;
     }
 
+
     public static void resetTable(Context context){
         SQLiteDatabase database = new DBHandler(context).getWritableDatabase();
 
