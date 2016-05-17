@@ -1,5 +1,6 @@
 package woverines.sfsuapp.activity;
 
+import android.animation.ObjectAnimator;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
@@ -52,22 +53,20 @@ public class MainActivity extends AppCompatActivity
         setSupportActionBar(toolbar);
 
         //TODO Below is an example on how the calls work.
-        HttpRequestorManager.initialize(this);
+        /*HttpRequestorManager.initialize(this);
 
         api_requestBuilder = new API_RequestBuilder();
-        this.data = new CoursesModels();
-        api_requestBuilder.populateModel("CSC", this.data, new Callback() {
+        api_requestBuilder.getSchoolTwitter(new Object(), new Callback() {
             @Override
             public void response(Object object) {
-
-                data  = (CoursesModels) object;
+                //TESTING IN THE BACK...
             }
 
             @Override
             public void error(NULLOBJ nullObj) {
 
             }
-        });
+        });*/
 
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
