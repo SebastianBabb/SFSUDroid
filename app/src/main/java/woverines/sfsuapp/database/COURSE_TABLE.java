@@ -127,10 +127,21 @@ public class COURSE_TABLE {
         return courses;
     }
 
+
     public static void resetTable(Context context){
         SQLiteDatabase database = new DBHandler(context).getWritableDatabase();
 
-        database.execSQL("DELETE FROM "  + TABLE_COURSE);
+        database.execSQL("DELETE FROM " + TABLE_COURSE);
+
+        database.close();
+    }
+
+    public static void deleteCourse(Context context, String name){
+        SQLiteDatabase database = new DBHandler(context).getWritableDatabase();
+
+        database.execSQL("DELETE FROM " + TABLE_COURSE + " WHERE " + COLUMN_NAME + " = '" + name + "'");
+
+        database.close();
     }
 
 
