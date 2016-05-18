@@ -20,7 +20,11 @@ import woverines.sfsuapp.R;
 
 
 /**
- * A placeholder fragment containing a simple view.
+ * Shuttle map fragment Java file.
+ * Controls fragment_shuttle_schedule.xml
+ * Displays Static map of campus shuttle map
+ * Displays the NextShuttle timer when
+ * @author Joshua Rubin
  */
 
 public class ShuttleScheduleFragment extends Fragment{
@@ -33,15 +37,14 @@ public class ShuttleScheduleFragment extends Fragment{
     private Button timeButton;
     private TextView timerView;
     private TextView timerDescription;
+    private Dialog mapInfoDialog;
+    private Button showDialog;
+    private Button dismissDialog;
+    public WebView mapWeb;
     private TextView daySchedule;
     private Timer countdown;
     private Calendar c;
 
-    private Dialog mapInfoDialog;
-    private Button showDialog;
-    private Button dismissDialog;
-    private TouchImageView touchMap;
-    public WebView mapWeb;
 
     public ShuttleScheduleFragment() {
     }
