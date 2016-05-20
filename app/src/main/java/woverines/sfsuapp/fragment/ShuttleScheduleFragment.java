@@ -80,6 +80,7 @@ public class ShuttleScheduleFragment extends Fragment{
         mapWeb = (WebView) rootView.findViewById(R.id.mapWebView);
         String data = "<body>" + "<img src=\"sfsumapmed.png\"/></body>";
         mapWeb.loadDataWithBaseURL("file:///android_asset/", data, "text/html", "utf-8", null);
+        mapWeb.getSettings().setBuiltInZoomControls(true);
 
         timerView = (TextView) rootView.findViewById(R.id.timerText);
         timerDescription = (TextView) rootView.findViewById(R.id.shuttleDescription);
