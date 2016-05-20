@@ -6,6 +6,7 @@ import android.widget.Spinner;
 
 /**
  * Created by Lowell Milliken on 5/17/2016.
+ * Modifies spinner so that the same item can be selected twice in a row.
  */
 public class ModifiedSpinner extends Spinner {
     OnItemSelectedListener listener;

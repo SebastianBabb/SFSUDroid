@@ -22,16 +22,30 @@ import woverines.sfsuapp.R;
 
 /**
  * Created by Lowell Milliken on 4/11/2016.
+ *
+ * This class represents the graph and buildings that represent the map.
  */
 public class MapData {
+    // names mapped to buildings
     private Map<String, MapBuilding> buildingList = new HashMap<>();;
+    // node ID mapped to node
     private Map<Integer,MapNode> nodeList;
 
+    /**
+     * Initializes that map.
+     * @param resources application resources
+     */
     public void initMap(Resources resources) {
         nodeList = new HashMap<>();
+
+        // loading the map from file
         loadMapFromFile(resources);
     }
 
+    /**
+     * Loads the map from a file.
+     * @param resources application resources
+     */
     private void loadMapFromFile(Resources resources) {
         try {
             InputStream nInputStream = resources.openRawResource(R.raw.nodes);
@@ -88,6 +102,10 @@ public class MapData {
         }
     }
 
+    /**
+     * Get all building names.
+     * @return array of building names
+     */
     public String [] getBuildingNames() {
         String [] buildings = buildingList.keySet().toArray(new String[0]);
         Arrays.sort(buildings);
@@ -103,18 +121,21 @@ public class MapData {
         return buildingList.get(name).getNearestNode(coords);
     }
 
+    /**
+     * Finds the nearest node to a location given in longitude and latitude.
+     * @param coords the location in question
+     * @return the nearest node to coords
+     */
     public MapNode getNearestNode(LatLng coords) {
         MapNode tempNode = new MapNode(-1,coords);
         MapNode[] nodes = nodeList.values().toArray(new MapNode[0]);
         MapNode nearest = nodes[0];
-        Log.d("New Nearest", nearest.getId() + ":" + tempNode.distFrom(nearest));
-        Log.d("From 27", "27:"+tempNode.distFrom(nodeList.get(27)));
+
         for(MapNode node : nodes) {
             float nearestDist = tempNode.distFrom(nearest);
             float curDist = tempNode.distFrom(node);
             if(curDist < nearestDist) {
                 nearest = node;
-                Log.d("New Nearest", nearest.getId() + ":" + curDist);
             }
         }
 

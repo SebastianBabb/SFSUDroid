@@ -6,6 +6,8 @@ import java.util.List;
 
 /**
  * Created by Lowell Milliken on 4/11/2016.
+ *
+ * This class represents a single building on the map.
  */
 public class MapBuilding {
     private String name;
@@ -30,6 +32,11 @@ public class MapBuilding {
         return coords;
     }
 
+    /**
+     * Get the nearest node belonging to the building to the coordinates.
+     * @param coords longitude and latitude coordinates.
+     * @return
+     */
     public MapNode getNearestNode(LatLng coords) {
         MapNode tempNode = new MapNode(-1,coords);
         MapNode nearest = nodeList.get(0);

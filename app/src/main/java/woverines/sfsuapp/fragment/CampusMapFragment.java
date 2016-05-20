@@ -49,7 +49,11 @@ import woverines.sfsuapp.Maps.MapPathfinder;
 import woverines.sfsuapp.R;
 
 /**
- * A placeholder fragment containing a simple view.
+ * The fragment that controls the view for the campus map. The view is created from
+ * fragment_campus_map.xml. This fragment will initialize the map data on creation and
+ * draw paths based on user input.
+ *
+ * @author Lowell Milliken
  */
 public class CampusMapFragment extends Fragment implements OnMapReadyCallback, OnMapClickListener,
         OnMarkerClickListener, AdapterView.OnItemSelectedListener,
@@ -61,15 +65,22 @@ public class CampusMapFragment extends Fragment implements OnMapReadyCallback, O
     private static final String ARG_SECTION_NUMBER = "section_number";
     private static final String ARG_TEXT = "text";
 
+    // SFSU location
     private static final LatLng SFSU = new LatLng(37.7219, -122.4782);
     private static final int STARTING_ZOOM = 17;
 
+    // the map
     private GoogleMap gMap;
+    // the api to the current location (not used for now)
     private GoogleApiClient mGoogleApiClient;
 
+    // the starting location for pathfinding
     private Marker startLocation;
+    // the default location
     private LatLng lastKnownLocation = SFSU;
+    // the map data
     private MapData mapData;
+    // prevents map calls before the map is ready
     private boolean mapReady = false;
 
     // map creation fields
@@ -95,12 +106,22 @@ public class CampusMapFragment extends Fragment implements OnMapReadyCallback, O
         return fragment;
     }
 
+    /**
+     * Called when the fragment is created.
+     * @param inflater
+     * @param container
+     * @param savedInstanceState
+     * @return
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_campus_map, container, false);
         Bundle args = getArguments();
 
+        /**
+         * This section places the google map in the fragment.
+         */
         FragmentManager manager = getChildFragmentManager();
         SupportMapFragment mapFragment = (SupportMapFragment) manager.findFragmentByTag("map_fragment");
 
@@ -113,13 +134,13 @@ public class CampusMapFragment extends Fragment implements OnMapReadyCallback, O
         transaction.replace(R.id.campus_map, mapFragment, "map_fragment");
         transaction.commit();
 
+        // create new map data and initialize
         mapData = new MapData();
         mapData.initMap(getResources());
 
+        // populate Spinner (drop down menu) with buildings from the map data
         Spinner spinner = (Spinner) rootView.findViewById(R.id.building_spinner);
-
         CharSequence [] buildings = mapData.getBuildingNames();
-
         ArrayAdapter<CharSequence> adapter = new ArrayAdapter<>(getContext(),
                 R.layout.support_simple_spinner_dropdown_item, buildings);
 
@@ -138,20 +159,30 @@ public class CampusMapFragment extends Fragment implements OnMapReadyCallback, O
         return rootView;
     }
 
+    /**
+     * Called asynchronously when the map is ready
+     * @param googleMap
+     */
     @Override
     public void onMapReady(GoogleMap googleMap) {
         gMap = googleMap;
 
+        // the map is ready
         Log.d("Map ready", "Campus map");
 
+        // set the map to be interacted with
         gMap.setOnMapClickListener(this);
         gMap.setOnMarkerClickListener(this);
+
+        // move the camera to SFSU
         gMap.moveCamera(CameraUpdateFactory.newLatLngBounds(
                         new LatLngBounds(new LatLng(37.72083239241096,-122.48518355190754),
                                             new LatLng(37.72567087764266,-122.47505284845829)), 0));
 
+        // place a default starting location
         startLocation = gMap.addMarker(new MarkerOptions().position(SFSU).title("start"));
 
+        // when creating nodes, display all current nodes with edges
         if(nodeCreation) {
             for(MapNode node: mapData.getNodes().values()) {
                 gMap.addMarker(new MarkerOptions().position(node.getCoords())
@@ -168,14 +199,20 @@ public class CampusMapFragment extends Fragment implements OnMapReadyCallback, O
         mapReady =true;
     }
 
+    /**
+     * Called when touching the map
+     * @param latLng
+     */
     @Override
     public void onMapClick(LatLng latLng) {
 
+        // add a node for manual transcription to data file
         if(nodeCreation) {
             gMap.addMarker(new MarkerOptions().position(latLng).title("Node #" + nodeCount));
             nodeCount++;
         }
 
+        // creating node and building files (not working, bad directory)
         buildingInit = false;
         if(buildingInit) {
 
@@ -198,12 +235,19 @@ public class CampusMapFragment extends Fragment implements OnMapReadyCallback, O
             }
             buildingInit = false;
         } else {
+
+            // remove the old starting location, add the new one
             startLocation.remove();
             startLocation = gMap.addMarker(new MarkerOptions().position(latLng).title("Start"));
             Log.i("Location", latLng.toString());
         }
     }
 
+    /**
+     * When clicking a marker in node creation node, displays it's info in the debug window
+     * @param marker
+     * @return
+     */
     @Override
     public boolean onMarkerClick(Marker marker) {
         if(nodeCreation) {
@@ -217,14 +261,22 @@ public class CampusMapFragment extends Fragment implements OnMapReadyCallback, O
         return false;
     }
 
+    /**
+     * Creates and adds a line on the map based on a path of nodes
+     * @param path the path to draw
+     * @return
+     */
     public Polyline drawPath(List<MapNode> path) {
         gMap.clear();
 
+        // create new line
         PolylineOptions pathOptions = new PolylineOptions();
 
+        // add marker at the end of the path
         gMap.addMarker(new MarkerOptions().position(path.get(path.size()-1).getCoords())
                                           .title("Destination"));
 
+        // add each location in the path to the line
         pathOptions.add(lastKnownLocation);
         for(MapNode node : path) {
             pathOptions.add(node.getCoords());
@@ -233,6 +285,14 @@ public class CampusMapFragment extends Fragment implements OnMapReadyCallback, O
         return gMap.addPolyline(pathOptions);
     }
 
+    /**
+     * When selecting an item from the spinner, create a new pathfinder, set the start and goal,
+     * get the path, and draw it.
+     * @param parent
+     * @param view
+     * @param position
+     * @param id
+     */
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         if(mapReady) {
@@ -279,6 +339,9 @@ public class CampusMapFragment extends Fragment implements OnMapReadyCallback, O
 
     }
 
+    /**
+     * get location from google location services (not used)
+     */
     private void updateLocation() {
         int permissionCheck = ContextCompat.checkSelfPermission(getActivity(),
                 Manifest.permission.ACCESS_FINE_LOCATION);

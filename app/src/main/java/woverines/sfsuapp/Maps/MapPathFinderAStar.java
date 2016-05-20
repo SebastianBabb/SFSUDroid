@@ -9,6 +9,10 @@ import java.util.PriorityQueue;
 
 /**
  * Created by Lowell Milliken on 4/11/2016.
+ *
+ * This class contains an implementation of the A* algorithm for pathfinding
+ * given some graph representing a map, a starting node and a goal (dest) node.
+ *
  */
 public class MapPathFinderAStar implements MapPathfinder {
     private MapData mapData;
@@ -16,79 +20,111 @@ public class MapPathFinderAStar implements MapPathfinder {
     private MapNode start;
     private MapNode dest;
 
+    /**
+     * This method finds the shortest path to the destination using the A* algorithm.
+     *
+     * @return returns a list of MapNodes representing the shortest path in order
+     */
     @Override
     public List<MapNode> getPath() {
 
-            // dummy path
-//        List<MapNode> path = new ArrayList<>();
-//
-//        path.add(new MapNode(new LatLng(37.72347404032161, -122.47694313526152), null));
-//        path.add(new MapNode(new LatLng(37.72339633833966, -122.47693005949259), null));
-//        path.add(new MapNode(new LatLng(37.7233931560042, -122.47706685215235), null));
-//        path.add(new MapNode(new LatLng(37.72334860329329, -122.47712317854167), null));
-//        path.add(new MapNode(new LatLng(37.72311496631688, -122.47731965035202), null));
-//        path.add(new MapNode(new LatLng(37.72291182619023, -122.47771427035332), null));
-//        path.add(new MapNode(new LatLng(37.722680309413605,-122.47794292867184),null));
-//        path.add(new MapNode(new LatLng(37.72237347564042, -122.47804015874864), null));
-//        path.add(new MapNode(new LatLng(37.722165294698954, -122.47845087200405), null));
-
+        // a priority queue to get best node candidates in order
         PriorityQueue<MapNode> toVisit;
         toVisit = new PriorityQueue<>(20, new ToDestinationComparator(dest));
 
+        // first candidate is the starting node
         toVisit.add(start);
 
+        // a list of all nodes that have already been visited
         List<MapNode> visited = new ArrayList<>();
-        Map<MapNode, MapNode> cameFrom= new HashMap<>();
 
+        // a mapping of node to node to keep track of predecessor nodes
+        Map<MapNode, MapNode> predecessors= new HashMap<>();
+
+        /*
+        keeping track of the g score and f score of each node
+        g score = current total path cost
+        f score = current total path cost + remaining distance to the destination
+        */
         Map<MapNode, Double> gScore = new HashMap<>();
         Map<MapNode, Double> fScore = new HashMap<>();
 
+        // initial g score is 0
         gScore.put(start, 0.0);
+        // initial f score is the straight line distance from the start to the dest
         fScore.put(start, gScore.get(start) + start.distFrom(dest));
 
         MapNode currentNode;
 
+        /*
+        continue as long as there are more nodes to visit
+        if this end condition is reached, there is no path between start and dest
+        */
         while(!toVisit.isEmpty())
         {
+            // get the next node closest to dest
             currentNode = toVisit.poll();
 
+            // if the node is dest, recreate the path and return it
             if(currentNode.equals(dest))
-                return currentPath = createPath(cameFrom, dest);
+                return currentPath = createPath(predecessors, dest);
 
+            // otherwise add it to already visited nodes
             visited.add(currentNode);
 
+            // get all neighboring nodes
             List<MapNode> neighbors = currentNode.getAdjacentNodes();
 
+            // for each neighbor
             for(MapNode neighbor : neighbors)
             {
+                // get the g score and f score for the current neighbor
                 double tempgScore = gScore.get(currentNode) + currentNode.distFrom(neighbor);
                 double tempfScore = tempgScore + neighbor.distFrom(dest);
 
+                // if this neighbor has already been visited and is on an equal or longer path
+                // than it was before, skip it
                 if(visited.contains(neighbor) && tempfScore >= fScore.get(neighbor))
                     continue;
 
+                // if the neighbor is not already under consideration for visiting
+                // or is on a potentially shorter path
                 if(!toVisit.contains(neighbor) || tempfScore < fScore.get(neighbor))
                 {
-                    cameFrom.put(neighbor, currentNode);
+                    // record the predecessor
+                    predecessors.put(neighbor, currentNode);
+
+                    // store its g and f scores
                     gScore.put(neighbor, tempgScore);
                     fScore.put(neighbor, tempfScore);
 
+                    // add it to the toVisit list if it is not already there
                     if(!toVisit.contains(neighbor))
                         toVisit.add(neighbor);
                 }
             }
         }
 
+        // return null if there is no path
         return null;
     }
 
-    private List<MapNode> createPath(Map<MapNode, MapNode> camefrom, MapNode curNode)
+    /**
+     * A recursive method for retrieving the path given the last node in the path
+     * and the predecessor node for each node.
+     *
+     * @param predecessors a mapping of nodes to nodes which indicates which nodes
+     *                 preceded which. (the ordering of the path)
+     * @param curNode the current node to be added to the path.
+     * @return
+     */
+    private List<MapNode> createPath(Map<MapNode, MapNode> predecessors, MapNode curNode)
     {
         List<MapNode> path = new ArrayList<>();
 
-        if(camefrom.containsKey(curNode))
+        if(predecessors.containsKey(curNode))
         {
-            path.addAll(createPath(camefrom, camefrom.get(curNode)));
+            path.addAll(createPath(predecessors, predecessors.get(curNode)));
             path.add(curNode);
         }
         else
@@ -98,6 +134,10 @@ public class MapPathFinderAStar implements MapPathfinder {
         return path;
     }
 
+    /**
+     * This class is used in the priority queue to compare two nodes based on their
+     * distance to the goal (dest) node
+     */
     private class ToDestinationComparator implements Comparator<MapNode>
     {
         private MapNode goal;
