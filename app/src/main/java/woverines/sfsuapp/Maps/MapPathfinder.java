@@ -25,10 +25,4 @@ public interface MapPathfinder {
      * @param node the destination node.
      */
     void setDestination(MapNode node);
-
-    /**
-     * Set the map data that the algorithm is working with
-     * @param mdata the map data
-     */
-    void setMapData(MapData mdata);
 }

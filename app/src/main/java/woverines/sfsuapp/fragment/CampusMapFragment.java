@@ -308,7 +308,6 @@ public class CampusMapFragment extends Fragment implements OnMapReadyCallback, O
                     String building = (String) parent.getItemAtPosition(position);
                     MapPathfinder pathfinder = new MapPathFinderAStar();
 
-                    pathfinder.setMapData(mapData);
                     MapNode nearest = mapData.getNearestNode(currentCoords);
                     Log.i("Nearest Node", "#" + nearest.getId());
                     pathfinder.setStart(nearest);

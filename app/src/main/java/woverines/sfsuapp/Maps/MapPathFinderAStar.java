@@ -15,7 +15,6 @@ import java.util.PriorityQueue;
  *
  */
 public class MapPathFinderAStar implements MapPathfinder {
-    private MapData mapData;
     private List<MapNode> currentPath;
     private MapNode start;
     private MapNode dest;
@@ -171,11 +170,6 @@ public class MapPathFinderAStar implements MapPathfinder {
     @Override
     public void setDestination(MapNode node) {
         dest = node;
-    }
-
-    @Override
-    public void setMapData(MapData mdata) {
-        mapData = mdata;
     }
 }
 
